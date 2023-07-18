@@ -6,11 +6,9 @@
 #define ARGOS3_DEEPRACER_CI_DEEPRACER_GYROSCOPE_SENSOR_H
 
 
-
 class ci_deepracer_gyroscope_sensor {
 
 };
-
 
 
 #endif //ARGOS3_DEEPRACER_CI_DEEPRACER_GYROSCOPE_SENSOR_H

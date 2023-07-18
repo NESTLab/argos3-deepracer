@@ -6,11 +6,9 @@
 #define ARGOS3_DEEPRACER_CI_DEEPRACER_ACCELEROMETER_SENSOR_H
 
 
-
 class ci_deepracer_accelerometer_sensor {
 
 };
-
 
 
 #endif //ARGOS3_DEEPRACER_CI_DEEPRACER_ACCELEROMETER_SENSOR_H

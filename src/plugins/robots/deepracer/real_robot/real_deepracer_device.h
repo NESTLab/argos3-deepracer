@@ -1,16 +1,11 @@
-//
-// Created by OWNER on 7/18/2023.
-//
+#ifndef REAL_DEEPRACER_DEVICE_H
+#define REAL_DEEPRACER_DEVICE_H
 
-#ifndef ARGOS3_DEEPRACER_REAL_DEEPRACER_DEVICE_H
-#define ARGOS3_DEEPRACER_REAL_DEEPRACER_DEVICE_H
+using namespace argos;
 
-
-
-class real_deepracer_device {
+class CRealDeepracerDevice {
 
 };
 
 
-
-#endif //ARGOS3_DEEPRACER_REAL_DEEPRACER_DEVICE_H
+#endif //REAL_DEEPRACER_DEVICE_H
