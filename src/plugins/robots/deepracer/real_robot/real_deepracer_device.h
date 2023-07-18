@@ -1,0 +1,16 @@
+//
+// Created by OWNER on 7/18/2023.
+//
+
+#ifndef ARGOS3_DEEPRACER_REAL_DEEPRACER_DEVICE_H
+#define ARGOS3_DEEPRACER_REAL_DEEPRACER_DEVICE_H
+
+
+
+class real_deepracer_device {
+
+};
+
+
+
+#endif //ARGOS3_DEEPRACER_REAL_DEEPRACER_DEVICE_H
