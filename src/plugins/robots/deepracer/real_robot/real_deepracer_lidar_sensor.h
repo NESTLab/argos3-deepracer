@@ -1,0 +1,16 @@
+//
+// Created by OWNER on 7/19/2023.
+//
+
+#ifndef ARGOS3_DEEPRACER_REAL_DEEPRACER_LIDAR_SENSOR_H
+#define ARGOS3_DEEPRACER_REAL_DEEPRACER_LIDAR_SENSOR_H
+
+
+
+class real_deepracer_lidar_sensor {
+
+};
+
+
+
+#endif //ARGOS3_DEEPRACER_REAL_DEEPRACER_LIDAR_SENSOR_H
