@@ -30,8 +30,12 @@ endif(NOT DEFINED ARGOS_BUILD_NATIVE)
 #
 if(NOT ARGOS_BUILD_FOR_SIMULATOR)
   # Check to see if ros 2 has been installed
-  find_package(rclcpp QUIET) # try to find rclcpp (representative ROS 2 library)
-
+  find_package(rclcpp) # try to find rclcpp (representative ROS 2 library)
+  find_package(ament_cmake)
+  find_package(std_msgs)
+  find_package(sensor_msgs)
+  include_directories(/opt/ros/foxy/include) # TODO: need to find a better way to do this (or perhaps this is the best?)
+  message(DEBUG "Finding the rclcpp package")
   if(NOT rclcpp_FOUND)
     message(FATAL_ERROR "Cannot find rclcpp library, please ensure that ROS 2 is installed")
   endif(NOT rclcpp_FOUND)

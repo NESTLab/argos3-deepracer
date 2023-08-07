@@ -1,6 +1,7 @@
 #include <argos3/core/utility/configuration/argos_configuration.h>
 #include <argos3/core/utility/configuration/command_line_arg_parser.h>
 #include <argos3/core/utility/logging/argos_log.h>
+#include <iostream>
 #include "real_deepracer.h"
 
 using namespace argos;
@@ -9,6 +10,7 @@ int main(int argc, char* argv[]) {
     /*
      * Parse the command line
      */
+
     std::string strARGoSFName;
     std::string strControllerId;
     CCommandLineArgParser cCLAP;
@@ -28,7 +30,10 @@ int main(int argc, char* argv[]) {
          * Initialize the robot
          */
         CRealDeepracer* pcRobot = new CRealDeepracer();
-        pcRobot->Init(strARGoSFName, strControllerId);
+        pcRobot->InitRobot(strARGoSFName, strControllerId);
+        rclcpp::init(argc, argv); // argc, argv but I just set them to 0 here
+        rclcpp::spin_some(std::make_shared<CRealDeepracer>());
+
         /*
          * Perform the main loop
          */
