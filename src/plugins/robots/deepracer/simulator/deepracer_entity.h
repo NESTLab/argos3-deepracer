@@ -1,0 +1,16 @@
+//
+// Created by OWNER on 8/6/2023.
+//
+
+#ifndef ARGOS3_DEEPRACER_DEEPRACER_ENTITY_H
+#define ARGOS3_DEEPRACER_DEEPRACER_ENTITY_H
+
+
+
+class deepracer_entity {
+
+};
+
+
+
+#endif //ARGOS3_DEEPRACER_DEEPRACER_ENTITY_H

@@ -1,0 +1,16 @@
+//
+// Created by OWNER on 8/6/2023.
+//
+
+#ifndef ARGOS3_DEEPRACER_DEEPRACER_MEASURES_H
+#define ARGOS3_DEEPRACER_DEEPRACER_MEASURES_H
+
+
+
+class deepracer_measures {
+
+};
+
+
+
+#endif //ARGOS3_DEEPRACER_DEEPRACER_MEASURES_H
