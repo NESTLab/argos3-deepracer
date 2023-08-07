@@ -28,6 +28,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "plugins/robots/deepracer"
   "/home/nhinguyen/argos3-deepracer/src/plugins/robots/deepracer"
   "plugins/robots/deepracer/argos3plugin_dprcr_deepracer_autogen/include"
+  "/opt/ros/foxy/include"
   "/home/nhinguyen/argos3-deepracer/src"
   "."
   "/usr/include/Headers"

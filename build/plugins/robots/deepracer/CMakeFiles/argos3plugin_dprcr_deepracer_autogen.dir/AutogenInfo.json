@@ -52,6 +52,7 @@
 	[
 		"/home/nhinguyen/argos3-deepracer/build/plugins/robots/deepracer",
 		"/home/nhinguyen/argos3-deepracer/src/plugins/robots/deepracer",
+		"/opt/ros/foxy/include",
 		"/home/nhinguyen/argos3-deepracer/src",
 		"/home/nhinguyen/argos3-deepracer/build",
 		"/usr/include/Headers",
