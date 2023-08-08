@@ -4,15 +4,19 @@
 #include <argos3/core/utility/rate.h>
 #include <argos3/core/utility/logging/argos_log.h>
 #include <argos3/core/real_robot/real_robot.h>
-//#include <argos3/core/control_interface/ci_controller.h>
+#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer_device.h>
+#include <rclcpp/rclcpp.hpp>
+#include <memory>
 #include <vector>
 
 using namespace argos;
 
+class CRealDeepracerDevice; // forward declare CRealDeepracerDevice
+
 class CRealDeepracer :
         public CRealRobot,
-        public rclcpp::Node
-        {
+        public rclcpp::Node,
+        public std::enable_shared_from_this<CRealDeepracer> {
 public:
 
     CRealDeepracer();
@@ -25,12 +29,11 @@ public:
     virtual void Act(Real f_elapsed_time);
 
 private:
-    std::vector<CRealDeepracerDevice*> m_vecActuators;
-    std::vector<CRealDeepracerDevice*> m_vecSensors;
+    std::vector<CRealDeepracerDevice *> m_vecActuators;
+    std::vector<CRealDeepracerDevice *> m_vecSensors;
     //Still not sure what we are going to do with these
     std::string strControllerId;
     std::string strARGoSFName;
-
 };
 
 #endif

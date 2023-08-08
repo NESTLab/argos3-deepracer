@@ -8,17 +8,20 @@
 #include <rclcpp/utilities.hpp>
 #include <rclcpp/wait_for_message.hpp>
 #include <argos3/core/utility/datatypes/datatypes.h>
+#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer.h>
 
 using namespace argos;
 
+class CRealDeepracer; // forward declare CRealDeepracer
+
 class CRealDeepracerDevice {
 public:
-    CRealDeepracerDevice(rclcpp::Node& t_node_handle) : m_tNodeHandle(t_node_handle) {}
+    CRealDeepracerDevice(CRealDeepracer& t_node_handle) : m_tNodeHandle(t_node_handle) {}
     virtual ~CRealDeepracerDevice() {}
     virtual void Do(Real f_elapsed_time) = 0;
 
 protected:
-    rclcpp::Node& m_tNodeHandle;
+    CRealDeepracer& m_tNodeHandle;
 
 };
 

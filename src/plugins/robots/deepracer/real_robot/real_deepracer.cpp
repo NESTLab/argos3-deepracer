@@ -1,8 +1,8 @@
 #include "real_deepracer.h"
 #include "real_deepracer_device.h"
-#include "real_deepracer_ackermann_steering_actuator.h"
-#include "real_deepracer_encoder_sensor.h"
-#include "real_deepracer_camera_sensor.h"
+// #include "real_deepracer_ackermann_steering_actuator.h"
+// #include "real_deepracer_encoder_sensor.h"
+// #include "real_deepracer_camera_sensor.h"
 #include "real_deepracer_lidar_sensor.h"
 
 /****************************************/
@@ -11,11 +11,6 @@
 CRealDeepracer::CRealDeepracer() : rclcpp::Node("deepracer_node") {
 }
 
-/****************************************/
-/****************************************/
-
-CRealDeepracer::~CRealDeepracer(){
-}
 /****************************************/
 /****************************************/
 
@@ -44,7 +39,7 @@ void CRealDeepracer::Destroy() {
 #define MAKE_SENSOR(CLASSNAME, TAG)					\
    if(str_name == TAG) {						\
       CLASSNAME* pcSens =						\
-         new CLASSNAME(std::make_shared<CRealDeepracer>(this));					\
+         new CLASSNAME(this->std::enable_shared_from_this<CRealDeepracer>::shared_from_this());					\
       m_vecSensors.push_back(pcSens);					\
       LOG << "[INFO] Initialized \"" << TAG << "\" sensor " << std::endl; \
       return pcSens;							\
@@ -64,20 +59,20 @@ CCI_Sensor* CRealDeepracer::MakeSensor(const std::string& str_name) {
 /****************************************/
 /****************************************/
 
-#define MAKE_ACTUATOR(CLASSNAME, TAG)					\
-   if(str_name == TAG) {						\
-      CLASSNAME* pcAct =						\
-         new CLASSNAME(this->node_handler);					\
-      m_vecActuators.push_back(pcAct);					\
-      LOG << "[INFO] Initialized \"" << TAG << "\" actuator " << std::endl; \
-      return pcAct;							\
-   }
+// #define MAKE_ACTUATOR(CLASSNAME, TAG)					\
+//    if(str_name == TAG) {						\
+//       CLASSNAME* pcAct =						\
+//          new CLASSNAME(this->node_handler);					\
+//       m_vecActuators.push_back(pcAct);					\
+//       LOG << "[INFO] Initialized \"" << TAG << "\" actuator " << std::endl; \
+//       return pcAct;							\
+//    }
 
-CCI_Actuator* CRealDeepracer::MakeActuator(const std::string& str_name) {
-//    MAKE_ACTUATOR(CRealDeepracerAckermannSteeringActuator, // TODO: name change
-//                  "ackermann_steering");
-    return NULL;
-}
+// CCI_Actuator* CRealDeepracer::MakeActuator(const std::string& str_name) {
+// //    MAKE_ACTUATOR(CRealDeepracerAckermannSteeringActuator, // TODO: name change
+// //                  "ackermann_steering");
+//     return NULL;
+// }
 /****************************************/
 /****************************************/
 

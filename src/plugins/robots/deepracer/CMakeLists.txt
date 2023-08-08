@@ -95,8 +95,7 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_deepracer argos3plugin_${ARGOS_BUILD_FOR}_qtopengl)
   endif(ARGOS_QTOPENGL_FOUND)
 else(ARGOS_BUILD_FOR_SIMULATOR)
-  target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_deepracer rclcpp std_msgs sensor_msgs)
-#  ament_target_dependencies(argos3plugin_${ARGOS_BUILD_FOR}_deepracer rclcpp)
+  ament_target_dependencies(argos3plugin_${ARGOS_BUILD_FOR}_deepracer rclcpp std_msgs sensor_msgs) # used to handle ROS 2 dependencies
 endif(ARGOS_BUILD_FOR_SIMULATOR)
 if(BUZZ_FOUND)
   target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_deepracer argos3plugin_${ARGOS_BUILD_FOR}_buzz ${BUZZ_LIBRARY})
@@ -120,31 +119,3 @@ install(TARGETS argos3plugin_${ARGOS_BUILD_FOR}_deepracer
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib/argos3
   ARCHIVE DESTINATION lib/argos3)
-
-
-#find_package(rclcpp QUIET) # try to find rclcpp (representative ROS 2 library)
-#if(NOT rclcpp_FOUND)
-#  message(FATAL_ERROR "Cannot find rclcpp library, please ensure that ROS 2 is installed")
-#endif(NOT rclcpp_FOUND)
-
-
-# add_library(DeepracerRealRobot
-#   src/plugins/robots/deepracer/real_robot/real_deepracer.h
-#   src/plugins/robots/deepracer/real_robot/real_deepracer.cpp
-#   src/plugins/robots/deepracer/real_robot/real_deepracer_device.h
-#   src/plugins/robots/deepracer/real_robot/real_deepracer_device.cpp
-#   src/plugins/robots/deepracer/real_robot/real_deepracer_lidar_sensor.h
-#   src/plugins/robots/deepracer/real_robot/real_deepracer_lidar_sensor.cpp
-# )
-
-# add_library( DeepracerControlInterface
-#   src/plugins/robots/deepracer/control_interface/ci_deepracer_lidar_sensor.h
-#   src/plugins/robots/deepracer/control_interface/ci_deepracer_lidar_sensor.cpp
-
-# )
-# link_directories(/usr/lib/argos3)
-# target_link_libraries(DeepracerRealRobot -argos3)
-
-# add_executable(
-#   argos3_deepracer main.cpp src/plugins/robots/deepracer/real_robot/main.cpp
-# )
