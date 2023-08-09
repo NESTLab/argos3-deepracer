@@ -4,7 +4,7 @@
 # argos3/plugins/robots/deepracer/control_interface
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_DEEPRACER_CONTROLINTERFACE
   # control_interface/ci_deepracer_camera_sensor.h
-  # control_interface/ci_deepracer_encoder_sensor.h
+   control_interface/ci_deepracer_imu_sensor.h
   control_interface/ci_deepracer_lidar_sensor.h)
 if(BUZZ_FOUND)
   set(ARGOS3_HEADERS_PLUGINS_ROBOTS_DEEPRACER_CONTROLINTERFACE
@@ -29,7 +29,7 @@ if(ARGOS_BUILD_FOR STREQUAL "dprcr")
     real_robot/real_deepracer.h
     real_robot/real_deepracer_device.h
   #     real_robot/real_deepracer_camera_sensor.h
-  #     real_robot/real_deepracer_encoder_sensor.h
+       real_robot/real_deepracer_imu_sensor.h
     real_robot/real_deepracer_lidar_sensor.h)
 endif(ARGOS_BUILD_FOR STREQUAL "dprcr")
 
@@ -39,7 +39,7 @@ endif(ARGOS_BUILD_FOR STREQUAL "dprcr")
 set(ARGOS3_SOURCES_PLUGINS_ROBOTS_DEEPRACER
   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_DEEPRACER_CONTROLINTERFACE}
 #   control_interface/ci_deepracer_camera_sensor.cpp
-#   control_interface/ci_deepracer_encoder_sensor.cpp
+   control_interface/ci_deepracer_imu_sensor.cpp
   control_interface/ci_deepracer_lidar_sensor.cpp)
 if(BUZZ_FOUND)
   set(ARGOS3_SOURCES_PLUGINS_ROBOTS_DEEPRACER
@@ -78,7 +78,7 @@ if(ARGOS_BUILD_FOR STREQUAL "dprcr")
     real_robot/real_deepracer.cpp
     real_robot/real_deepracer_device.cpp
 #     real_robot/real_deepracer_camera_sensor.cpp
-#     real_robot/real_deepracer_encoder_sensor.cpp
+     real_robot/real_deepracer_imu_sensor.cpp
     real_robot/real_deepracer_lidar_sensor.cpp)
 endif(ARGOS_BUILD_FOR STREQUAL "dprcr")
 
