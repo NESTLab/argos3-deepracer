@@ -1,0 +1,58 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"plugins/robots/deepracer/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"id" : "argos3plugin_simulator_deepracer_autogen::@db43af78742c5b904c3e",
+	"isGeneratorProvided" : true,
+	"name" : "argos3plugin_simulator_deepracer_autogen",
+	"paths" : 
+	{
+		"build" : "plugins/robots/deepracer",
+		"source" : "plugins/robots/deepracer"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/plugins/robots/deepracer/CMakeFiles/argos3plugin_simulator_deepracer_autogen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/plugins/robots/deepracer/CMakeFiles/argos3plugin_simulator_deepracer_autogen.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

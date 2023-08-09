@@ -1,0 +1,121 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.1"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "plugins",
+					"childIndexes" : 
+					[
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-plugins-Debug-55275e3f2f02dcd473ff.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "plugins"
+				},
+				{
+					"build" : "plugins/robots",
+					"childIndexes" : 
+					[
+						3
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-plugins.robots-Debug-fe3ff97acd7bab3a2d1d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.1"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 0,
+					"source" : "plugins/robots"
+				},
+				{
+					"build" : "plugins/robots/deepracer",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-plugins.robots.deepracer-Debug-e80bc3ce0ed1d07ff13d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5.1"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 0,
+					"source" : "plugins/robots/deepracer",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					],
+					"name" : "argos3_",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 3,
+					"id" : "argos3plugin_simulator_deepracer::@db43af78742c5b904c3e",
+					"jsonFile" : "target-argos3plugin_simulator_deepracer-Debug-9cf9fe47cef2cf3f198f.json",
+					"name" : "argos3plugin_simulator_deepracer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "argos3plugin_simulator_deepracer_autogen::@db43af78742c5b904c3e",
+					"jsonFile" : "target-argos3plugin_simulator_deepracer_autogen-Debug-719a0b76477404e5e0f2.json",
+					"name" : "argos3plugin_simulator_deepracer_autogen",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/nhinguyen/argos3-deepracer/src/cmake-build-debug",
+		"source" : "/home/nhinguyen/argos3-deepracer/src"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}
