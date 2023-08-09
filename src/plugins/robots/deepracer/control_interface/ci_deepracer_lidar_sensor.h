@@ -60,6 +60,7 @@ namespace argos {
 
       virtual void ReadingsToLuaState(lua_State* pt_lua_state) {};
 #endif
+
     };
 }
 

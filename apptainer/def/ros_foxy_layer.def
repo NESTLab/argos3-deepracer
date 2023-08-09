@@ -10,7 +10,7 @@ From: base_ubuntu_2004.sif
     SUMMARY
     This container contains the installation of ROS 2 Foxy. To add this layer to
     an existing build simply modify the value for `From` above to point to an existing
-    .sif file
+    .sif file.
 
     CHANGELOG
     v1.0.0

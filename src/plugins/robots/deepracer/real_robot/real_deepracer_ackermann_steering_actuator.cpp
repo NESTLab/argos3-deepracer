@@ -1,24 +1,37 @@
-#include "real_deepracer_differential_steering_actuator.h"
+#include "real_deepracer_ackermann_steering_actuator.h"
 
-CRealDeepracerDifferentialSteeringActuator::CRealDeepracerDifferentialSteeringActuator(rclcpp::Node& t_node_handler) {
-    // Create the publisher
-    std::shared_ptr<PublisherT> publisher_ = t_node_handler->create_publisher<std_msgs::msg::String>("/cmd_vel", 10);
+CRealDeepracerAckermannSteeringActuator::CRealDeepracerAckermannSteeringActuator(const std::shared_ptr<CRealDeepracer>& pt_node) 
+    : CRealDeepracerDevice(*pt_node) {
+    
+    m_ptServoMsgPublisher = pt_node->create_publisher<deepracer_interfaces_pkg::msg::ServoCtrlMsg>(
+        "/ctrl_pkg/servo_msg", 10
+    );
 }
 
-CRealDeepracerDifferentialSteeringActuator::~CRealDeepracerDifferentialSteeringActuator() {
+CRealDeepracerAckermannSteeringActuator::~CRealDeepracerAckermannSteeringActuator() {
 }
 
 /****************************************/
 /****************************************/
-void CRealDeepracerDifferentialSteeringActuator::Do(int f_elapsed_time) {
 
+void CRealDeepracerAckermannSteeringActuator::Do(Real f_elapsed_time) {
+
+    // Publish to /ctrl_pkg/servo_msg
+    deepracer_interfaces_pkg::msg::ServoCtrlMsg tServoMsg;
+
+    tServoMsg.angle = m_fSteeringAndThrottle[0];
+    tServoMsg.throttle = m_fSteeringAndThrottle[1];
+
+    m_ptServoMsgPublisher->publish(tServoMsg);
 }
-void CRealDeepracerDifferentialSteeringActuator::SetLinearVelocity(int f_left_velocity, int f_right_velocity) {
-    // Publishing to the topic
-    auto message = std_msgs::msg::geometry_msgs();
-    message.linear.x = (f_left_velocity + f_right_velocity)/2; // Might need kinematics here
-    RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
-    m_tNodeHandle.publisher_->publish(message);
+
+/****************************************/
+/****************************************/
+
+void CRealDeepracerAckermannSteeringActuator::SetSteeringAndThrottle(Real f_normalized_steering_ang,
+                                                                        Real f_normalized_throttle) {
+    m_fSteeringAndThrottle[0] = f_normalized_steering_ang;
+    m_fSteeringAndThrottle[1] = f_normalized_throttle;
 }
 
 

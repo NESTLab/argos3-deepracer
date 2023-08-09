@@ -28,6 +28,12 @@ namespace argos{
         virtual std::vector<Real> GetAngularVelocities() const = 0;
         virtual std::vector<Real> GetLinearAccelerations() const = 0;
 
+#ifdef ARGOS_WITH_LUA
+      virtual void CreateLuaState(lua_State* pt_lua_state) {};
+
+      virtual void ReadingsToLuaState(lua_State* pt_lua_state) {};
+#endif
+
     };
 }
 

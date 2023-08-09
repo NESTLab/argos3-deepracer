@@ -2,7 +2,8 @@
 #include <argos3/core/utility/configuration/command_line_arg_parser.h>
 #include <argos3/core/utility/logging/argos_log.h>
 #include <iostream>
-#include "real_deepracer.h"
+#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer.h>
+#include <rclcpp/rclcpp.hpp>
 
 using namespace argos;
 
@@ -38,6 +39,11 @@ int main(int argc, char* argv[]) {
          * Perform the main loop
          */
         pcRobot->Execute();
+
+        /*
+         * Clean up
+        */
+        rclcpp::shutdown();
     }
     catch(CARGoSException& ex) {
         /* A fatal error occurred: dispose of data, print error and exit */

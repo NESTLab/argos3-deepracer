@@ -1,6 +1,6 @@
 #include "real_deepracer_lidar_sensor.h"
 
-CRealDeepracerLIDARSensor::CRealDeepracerLIDARSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle) : CRealDeepracerDevice(*pt_node_handle){
+CRealDeepracerLIDARSensor::CRealDeepracerLIDARSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle) : CRealDeepracerDevice(*pt_node_handle) {
     m_ptLidarSubscription = pt_node_handle->create_subscription<sensor_msgs::msg::LaserScan>(
             "/scan",
             10,
