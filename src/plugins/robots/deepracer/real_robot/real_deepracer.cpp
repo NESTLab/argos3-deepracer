@@ -1,8 +1,7 @@
 #include "real_deepracer.h"
-#include "real_deepracer_device.h"
 // #include "real_deepracer_ackermann_steering_actuator.h"
 // #include "real_deepracer_encoder_sensor.h"
-// #include "real_deepracer_camera_sensor.h"
+#include "real_deepracer_imu_sensor.h"
 #include "real_deepracer_lidar_sensor.h"
 
 /****************************************/
@@ -48,10 +47,10 @@ void CRealDeepracer::Destroy() {
 CCI_Sensor* CRealDeepracer::MakeSensor(const std::string& str_name) {
 //    MAKE_SENSOR(CRealDeepracerCameraSensor,
 //                "camera");
-//    MAKE_SENSOR(CRealDeepracerEncoderSensor,
-//                "ackermann_steering");
-    MAKE_SENSOR(CRealDeepracerLIDARSensor,
-                "lidar");
+    // MAKE_SENSOR(CRealDeepracerIMUSensor,
+    //             "imu");
+    MAKE_SENSOR(CRealDeepracerLIDARSensor, 
+    "lidar");
     return NULL;
 }
 

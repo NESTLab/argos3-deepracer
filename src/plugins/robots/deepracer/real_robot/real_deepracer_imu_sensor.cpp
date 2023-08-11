@@ -21,10 +21,16 @@ CRealDeepracerIMUSensor::~CRealDeepracerIMUSensor() {
 
 void CRealDeepracerIMUSensor::ImuCallBack(const sensor_msgs::msg::Imu::SharedPtr msg)
 {
-    m_vecOrientation.push_back(msg->orientation.x);
-    m_vecOrientation.push_back(msg->orientation.y);
-    m_vecOrientation.push_back(msg->orientation.z);
-    m_vecOrientation.push_back(msg->orientation.w);
+    //Update the angular velocity values
+    m_vecAngularVelocity.SetX(msg->angular_velocity.x);
+    m_vecAngularVelocity.SetY(msg->angular_velocity.y);
+    m_vecAngularVelocity.SetZ(msg->angular_velocity.z);
+
+    //Update the angular velocity values
+    m_vecLinearAcceleration.SetX(msg->linear_acceleration.x);
+    m_vecLinearAcceleration.SetY(msg->linear_acceleration.y);
+    m_vecLinearAcceleration.SetZ(msg->linear_acceleration.z);
+
 }
 
 /****************************************/
@@ -32,16 +38,20 @@ void CRealDeepracerIMUSensor::ImuCallBack(const sensor_msgs::msg::Imu::SharedPtr
 
 
 void CRealDeepracerIMUSensor::Do(Real f_elapsed_time) {
-    //Takes the saved values and store them all in one buffer
-    //Should I store the timing as well ?
-    m_vecOrientationList.push_back(m_vecOrientation);
-    m_vecAngularVelocityList.push_back(m_vecAngularVelocity);
-    m_vecLinearAccelerationList.push_back(m_vecLinearAcceleration);
+}
+
+
+
+/****************************************/
+/****************************************/
+
+CVector3 CRealDeepracerIMUSensor::GetAngularVelocities() const{
+    return m_vecAngularVelocity;
 }
 
 /****************************************/
 /****************************************/
 
-std::vector<float> CRealDeepracerIMUSensor::GetCurrentOrientation() {
-    return m_vecOrientation;
+CVector3 CRealDeepracerIMUSensor::GetLinearAccelerations() const{
+    return m_vecLinearAcceleration;
 }
