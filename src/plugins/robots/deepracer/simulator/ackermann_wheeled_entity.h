@@ -52,7 +52,7 @@ namespace argos {
             return m_pfWheelVelocities;
         }
 
-        void SetVelocities(Real* pf_velocities);
+        void SetSteeringAndThrottle(Real f_steering_ang, Real f_throttle_speed);
 
         virtual std::string GetTypeDescription() const {
             return "wheels";

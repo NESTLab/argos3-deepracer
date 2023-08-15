@@ -9,7 +9,7 @@
 
 namespace argos {
     class CRealDeepracerAckermannSteeringActuator :
-            public CCI_DeepracerAckermannSteeringActuator,
+            public CCI_AckermannSteeringActuator,
             public CRealDeepracerDevice {
     public:
 

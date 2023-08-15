@@ -12,7 +12,7 @@ namespace argos {
           m_fInterwheelDistance(f_interwheel_distance), m_fWheelbaseDistance(f_wheelbase_distance) {}
 
     void CDynamics2DAckermannSteeringControl::SetSteeringAndThrottle(Real f_steering_ang,
-                                                                     Real f_throttled_speed) {
+                                                                     Real f_throttle_speed) {
         // Compute the linear and angular velocity of the body
         // https://www.xarg.org/book/kinematics/ackerman-steering/
 
@@ -32,14 +32,14 @@ namespace argos {
          *      a = body orientation
          *      w = body angular velocity
          *      v = body center linear velocity
-         *      s = vehicle speed (throttled wheel speed)
+         *      s = vehicle speed (wheel speed produced by throttle)
          *      p = steering angle
          *      l = wheel base
          */
 
-        SetAngularVelocity((f_throttled_speed / m_fWheelbaseDistance) * ::tan(f_steering_ang));
-        CVector2 cLinVel(f_throttled_speed * ::cos(m_ptControlledBody->a),
-                         f_throttled_speed * ::sin(m_ptControlledBody->a));
+        SetAngularVelocity((f_throttle_speed / m_fWheelbaseDistance) * ::tan(f_steering_ang));
+        CVector2 cLinVel(f_throttle_speed * ::cos(m_ptControlledBody->a),
+                         f_throttle_speed * ::sin(m_ptControlledBody->a));
 
         SetLinearVelocity(cLinVel);
     }

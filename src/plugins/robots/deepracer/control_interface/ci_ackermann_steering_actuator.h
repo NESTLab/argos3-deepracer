@@ -15,8 +15,8 @@ namespace argos {
 
         virtual ~CCI_AckermannSteeringActuator() {}
 
-        virtual void SetSteeringAndThrottle(Real f_normalized_steering_ang,
-                                            Real f_normalized_throttle) = 0;
+        virtual void SetSteeringAndThrottle(Real f_steering_ang,
+                                            Real f_throttle_speed) = 0;
 
 #ifdef ARGOS_WITH_LUA
         virtual void CreateLuaState(lua_State* pt_lua_state){};
@@ -26,7 +26,9 @@ namespace argos {
 
     protected:
 
-        Real m_fSteeringAndThrottle[2];
+        Real m_fSteeringAngle;
+
+        Real m_fThrottleSpeed;
     };
 }
 

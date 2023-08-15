@@ -22,8 +22,8 @@ namespace argos {
 
         virtual ~CDynamics2DAckermannSteeringControl() {}
 
-        void SetSteeringAndThrottle(Real f_normalized_steering_ang,
-                                    Real f_normalized_throttle);
+        void SetSteeringAndThrottle(Real f_steering_ang,
+                                    Real f_throttle_speed);
 
         inline Real GetWheelbaseDistance() const {
             return m_fWheelbaseDistance;

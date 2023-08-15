@@ -14,6 +14,7 @@ namespace argos {
         ::memset(m_pfWheelRadia, 0, m_unNumWheels * sizeof(Real));
         m_pfWheelVelocities = new Real[m_unNumWheels];
         ::memset(m_pfWheelVelocities, 0, m_unNumWheels * sizeof(Real));
+        m_fSteeringAngle = 0.0;
         Disable();
     }
 
@@ -28,6 +29,7 @@ namespace argos {
         ::memset(m_pfWheelRadia, 0, m_unNumWheels * sizeof(Real));
         m_pfWheelVelocities = new Real[m_unNumWheels];
         ::memset(m_pfWheelVelocities, 0, m_unNumWheels * sizeof(Real));
+        m_fSteeringAngle = 0.0;
         Disable();
     }
 
@@ -50,9 +52,9 @@ namespace argos {
     /****************************************/
     /****************************************/
 
-    void CAckermannWheeledEntity::SetWheel(UInt32 un_index,
+    void CAckermannWheeledEntity::SetWheel(UInt32          un_index,
                                            const CVector3& c_position,
-                                           Real f_radius) {
+                                           Real            f_radius) {
         if (un_index < m_unNumWheels) {
             m_pcWheelPositions[un_index] = c_position;
             m_pfWheelRadia[un_index]     = f_radius;
@@ -97,8 +99,9 @@ namespace argos {
     /****************************************/
     /****************************************/
 
-    void CAckermannWheeledEntity::SetVelocities(Real* pf_velocities) {
-        ::memcpy(m_pfWheelVelocities, pf_velocities, m_unNumWheels * sizeof(Real));
+    void CAckermannWheeledEntity::SetSteeringAndThrottle(Real f_steering_ang, Real f_throttle_speed) {
+        m_fSteeringAngle = f_steering_ang;
+        ::memcpy(m_pfWheelVelocities, &f_throttle_speed, m_unNumWheels * sizeof(Real));
     }
 
     /****************************************/
