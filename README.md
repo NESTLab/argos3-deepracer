@@ -9,10 +9,14 @@ SWARM ? Argos
     - `plugins/robots/deepracer/simulator/dynamics2d_ackermannsteering_control.*` -> `plugins/simulator/physics_engines/dynamics2d/dynamics2d_ackermannsteering_control.*`
     - `plugins/robots/deepracer/simulator/deepracer_imu_sensor_equipped_entity.*` -> `plugins/simulator/entities/imu_sensor_equipped_entity.*`
     - `plugins/robots/deepracer/simulator/ackermann_wheeled_entity.*` -> `plugins/simulator/entities/ackermann_wheeled_entity.*`
+    - make generic the imu sensor?
 - complete deepracer_measures file
 - obtain mass, max force and max torque values for `dynamics2d_deepracer_model`.
 - complete the following classes (do global search on "TODO"s):
     - dynamics2d_deepracer_model
+    - deepracer_entity: the camera and lidar entities to be added, shape of the robot
+    - lidar default sensor (may have been implemented by Nhi already)
+- remove the imu equipped entity (based on the [positioning sensor](https://github.com/ilpincy/argos3/blob/master/src/plugins/robots/generic/simulator/positioning_default_sensor.h) we can just use the sensor without the entity)
 
 
 ## Unorganized notes (TODO: clean up before release)
@@ -21,3 +25,4 @@ SWARM ? Argos
     - What is the max forward speed? 4.0 m/s from the `cmdvel_to_servo_node` repo
     - Max back speed = -4.0 m/s
     - max steer = pi/6 rad, min steer = -pi/6 rad (assumption: right handed rule)
+- (from https://docs.aws.amazon.com/deepracer/latest/developerguide/deepracer-choose-race-type.html) On the AWS DeepRacer physical vehicle a LiDAR sensor is mounted on the rear and tilted down by 6 degrees. It rotates at the angular velocity of 10 rotations per second and has a range of 15cm to 2m. It can detect objects behind and beside the host vehicle as well as tall objects unobstructed by the vehicle parts in the front. The angle and range are chosen to make the LiDAR unit less susceptible to environmental noise.

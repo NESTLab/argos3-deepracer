@@ -8,12 +8,20 @@ namespace argos {
 #include <argos3/core/control_interface/ci_sensor.h>
 #include <argos3/core/utility/math/vector3.h>
 
-namespace argos{
+namespace argos {
     class CCI_DeepracerIMUSensor : public CCI_Sensor {
     public:
+
+        struct SReading {
+            CVector3 AngVelocity;
+            CVector3 LinAcceleration;
+        };
+
+    public:
+
         /**
-        * Class constructor
-        */
+         * Class constructor
+         */
         CCI_DeepracerIMUSensor();
 
         /**
@@ -22,17 +30,24 @@ namespace argos{
         virtual ~CCI_DeepracerIMUSensor() {}
 
         /**
-        * Returns the readings of this sensor
-        */
-        virtual CVector3 GetAngularVelocities() const = 0;
-        virtual CVector3 GetLinearAccelerations() const = 0;
-#ifdef ARGOS_WITH_LUA
-        virtual void CreateLuaState(lua_State* pt_lua_state) {};
+         * Returns the reading of this sensor
+         */
+        inline const SReading& GetReading() const {
+            return m_sReading;
+        }
 
-        virtual void ReadingsToLuaState(lua_State* pt_lua_state) {};
+#ifdef ARGOS_WITH_LUA
+        virtual void CreateLuaState(lua_State* pt_lua_state) {}
+
+        virtual void ReadingsToLuaState(lua_State* pt_lua_state) {}
 #endif
+
+    protected:
+
+        SReading m_sReading;
+        CRadians m_cAngle;
+        CVector3 m_cAxis;
     };
 }
-
 
 #endif
