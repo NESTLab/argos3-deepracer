@@ -27,7 +27,7 @@ namespace argos {
         /**
          * Returns the readings of this sensor
          */
-        virtual CVector3 GetReading() const = 0;
+        virtual Real GetReading(UInt32 un_idx) const = 0;
 
 
 
