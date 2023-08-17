@@ -26,7 +26,7 @@ namespace argos {
         /**
          * Returns the readings of this sensor
          */
-        virtual CVector3 GetReading() const = 0;
+        virtual Real GetReading(UInt32 un_idx) const = 0;
 
 #ifdef ARGOS_WITH_LUA
         virtual void CreateLuaState(lua_State* pt_lua_state){};

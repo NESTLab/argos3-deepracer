@@ -1,31 +1,32 @@
 #ifndef REAL_DEEPRACER_LIDAR_SENSOR_H
 #define REAL_DEEPRACER_LIDAR_SENSOR_H
-#include <vector>
-#include <memory>
-#include <functional>
-#include <sensor_msgs/msg/laser_scan.hpp>
-#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer_device.h>
+#include <argos3/core/utility/math/vector3.h>
 #include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_lidar_sensor.h>
 #include <argos3/plugins/robots/deepracer/real_robot/real_deepracer.h>
-#include <argos3/core/utility/math/vector3.h>
+#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer_device.h>
 
+#include <functional>
+#include <memory>
+#include <sensor_msgs/msg/laser_scan.hpp>
+#include <vector>
 
 using namespace argos;
 
-
-class CRealDeepracerLIDARSensor :
-        public CCI_DeepracerLIDARSensor,
-        public CRealDeepracerDevice {
+class CRealDeepracerLIDARSensor : public CCI_DeepracerLIDARSensor,
+                                  public CRealDeepracerDevice {
 public:
+
     CRealDeepracerLIDARSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle);
+
     virtual ~CRealDeepracerLIDARSensor();
+
     virtual void Do(Real f_elapsed_time);
 
     /**
      * Returns the range data [m] (Note: values < range_min or > range_max should be discarded)
      */
-    virtual CVector3 GetReading() const;
-    
+    virtual Real GetReading(UInt32 un_idx) const;
+
     /**
      * Returns start angle of the scan [rad]
      */
@@ -62,19 +63,21 @@ public:
     Real GetTimeScan();
 
 private:
+
     void LidarCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
+
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr m_ptLidarSubscription;
-    CVector3 m_vecRanges;
 
-    Real m_fAngle_min;        // Start angle of the scan [rad]
-    Real m_fAngle_max;        // End angle of the scan [rad]
-    Real m_fAngle_increment;  // Angular distance between measurements [rad]
+    std::vector<Real> m_vecRanges; // Vector of ranges
 
-    Real m_fTime_increment;   // Time between measurements [seconds]
-    Real m_fScan_time;        // Mime between scans [seconds]
+    Real m_fAngleMin;       // Start angle of the scan [rad]
+    Real m_fAngleMax;       // End angle of the scan [rad]
+    Real m_fAngleIncrement; // Angular distance between measurements [rad]
 
-    Real m_fRange_min;        // Minimum range value [m]
-    Real m_fRange_max;        // Maximum range value [m]
+    Real m_fTimeIncrement; // Time between measurements [seconds]
+    Real m_fScanTime;      // Mime between scans [seconds]
 
+    Real m_fRangeMin; // Minimum range value [m]
+    Real m_fRangeMax; // Maximum range value [m]
 };
 #endif
