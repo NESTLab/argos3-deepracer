@@ -1,6 +1,6 @@
 #include "real_deepracer_imu_sensor.h"
 
-CRealDeepracerIMUSensor::CRealDeepracerIMUSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle) : CRealDeepracerDevice(*pt_node_handle){
+CRealDeepracerIMUSensor::CRealDeepracerIMUSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle) : CRealDeepracerDevice(pt_node_handle){
     m_ptImuSubscription = pt_node_handle->create_subscription<sensor_msgs::msg::Imu>(
             //http://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/Imu.html
             "/imu_pkg/raw_data",

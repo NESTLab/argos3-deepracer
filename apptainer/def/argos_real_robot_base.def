@@ -56,9 +56,10 @@ From: ubuntu:20.04
     mkdir build && cd build
     cmake -DCMAKE_BUILD_TYPE=Release \
       -DARGOS_BUILD_FOR={{ARGOS_BUILD_FOR}} \
+      -DARGOS_DOCUMENTATION=OFF \
+      -DARGOS_BUILD_NATIVE=ON \
       ../src
     make -j$(nproc)
-    make doc
     make install
     ldconfig
     popd

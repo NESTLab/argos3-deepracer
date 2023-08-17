@@ -28,6 +28,21 @@ namespace argos {
          */
         virtual Real GetReading(UInt32 un_idx) const = 0;
 
+        /**
+         * Returns the readings of this sensor
+         */
+        virtual size_t GetNumReadings() const = 0;
+
+        /*
+         * Switches the sensor power on.
+         */
+        virtual void PowerOn() = 0;
+
+        /*
+         * Switches the sensor power off.
+         */
+        virtual void PowerOff() = 0;
+
 #ifdef ARGOS_WITH_LUA
         virtual void CreateLuaState(lua_State* pt_lua_state){};
 

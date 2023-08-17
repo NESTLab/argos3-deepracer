@@ -2,12 +2,12 @@
 #define REAL_DEEPRACER_LIDAR_SENSOR_H
 #include <argos3/core/utility/math/vector3.h>
 #include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_lidar_sensor.h>
-#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer.h>
 #include <argos3/plugins/robots/deepracer/real_robot/real_deepracer_device.h>
 
 #include <functional>
 #include <memory>
 #include <sensor_msgs/msg/laser_scan.hpp>
+#include <std_srvs/srv/empty.hpp>
 #include <vector>
 
 using namespace argos;
@@ -26,6 +26,23 @@ public:
      * Returns the range data [m] (Note: values < range_min or > range_max should be discarded)
      */
     virtual Real GetReading(UInt32 un_idx) const;
+
+    /**
+     * Returns the readings of this sensor
+     */
+    inline size_t GetNumReadings() const {
+        return Abs(m_fAngleMax - m_fAngleMin) / m_fAngleIncrement;
+    }
+
+    /*
+     * Switches the sensor power on.
+     */
+    virtual void PowerOn();
+
+    /*
+     * Switches the sensor power off.
+     */
+    virtual void PowerOff();
 
     /**
      * Returns start angle of the scan [rad]
@@ -67,6 +84,8 @@ private:
     void LidarCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
 
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr m_ptLidarSubscription;
+    rclcpp::Client<std_srvs::srv::Empty>::SharedPtr              m_ptLidarStartClient;
+    rclcpp::Client<std_srvs::srv::Empty>::SharedPtr              m_ptLidarStopClient;
 
     std::vector<Real> m_vecRanges; // Vector of ranges
 

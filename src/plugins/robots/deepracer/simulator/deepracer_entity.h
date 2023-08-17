@@ -5,14 +5,14 @@ namespace argos {
     class CControllableEntity;
     class CEmbodiedEntity;
     class CDeepracerEntity;
-    class CLIDARSensorEquippedEntity;
     class CIMUSensorEquippedEntity;
     class CRABEquippedEntity;
+    class CProximitySensorEquippedEntity;
     class CBatteryEquippedEntity;
 }
 
 #include <argos3/core/simulator/entity/composable_entity.h>
-// #include <argos3/plugins/simulator/entities/wheeled_entity.h>
+
 #include "ackermann_wheeled_entity.h" // TODO: fix path when the CAckermannWheeledEntity class gets integrated to the main ARGoS3 code
 
 namespace argos {
@@ -47,7 +47,7 @@ namespace argos {
             return *m_pcEmbodiedEntity;
         }
 
-        inline CLIDARSensorEquippedEntity& GetLIDARSensorEquippedEntity() {
+        inline CProximitySensorEquippedEntity& GetLIDARSensorEquippedEntity() {
             return *m_pcLIDARSensorEquippedEntity;
         }
 
@@ -69,13 +69,13 @@ namespace argos {
 
     private:
 
-        CControllableEntity*        m_pcControllableEntity;
-        CEmbodiedEntity*            m_pcEmbodiedEntity;
-        CLIDARSensorEquippedEntity* m_pcLIDARSensorEquippedEntity;
-        CIMUSensorEquippedEntity*   m_pcIMUSensorEquippedEntity;
-        CRABEquippedEntity*         m_pcRABEquippedEntity;
-        CAckermannWheeledEntity*    m_pcAckermannWheeledEntity;
-        CBatteryEquippedEntity*     m_pcBatteryEquippedEntity;
+        CControllableEntity*            m_pcControllableEntity;
+        CEmbodiedEntity*                m_pcEmbodiedEntity;
+        CProximitySensorEquippedEntity* m_pcLIDARSensorEquippedEntity;
+        CIMUSensorEquippedEntity*       m_pcIMUSensorEquippedEntity;
+        CRABEquippedEntity*             m_pcRABEquippedEntity;
+        CAckermannWheeledEntity*        m_pcAckermannWheeledEntity;
+        CBatteryEquippedEntity*         m_pcBatteryEquippedEntity;
     };
 }
 

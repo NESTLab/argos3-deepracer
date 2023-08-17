@@ -21,6 +21,7 @@ public:
 
     CRealDeepracer();
     virtual ~CRealDeepracer() {}
+    virtual void InitRobot() {}
     virtual void InitRobot(std::string str_argos_fname, std::string str_controller_id);
     virtual void Destroy();
     virtual CCI_Actuator* MakeActuator(const std::string& str_name);
@@ -31,7 +32,6 @@ public:
 private:
     std::vector<CRealDeepracerDevice *> m_vecActuators;
     std::vector<CRealDeepracerDevice *> m_vecSensors;
-    //Still not sure what we are going to do with these
     std::string strControllerId;
     std::string strARGoSFName;
 };

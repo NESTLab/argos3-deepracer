@@ -3,8 +3,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
-#include "real_deepracer_device.h"
-#include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_ackermann_steering_actuator.h>
+#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer_device.h>
+#include <argos3/plugins/robots/deepracer/control_interface/ci_ackermann_steering_actuator.h>
 #include <deepracer_interfaces_pkg/msg/servo_ctrl_msg.hpp>
 
 namespace argos {

@@ -33,6 +33,7 @@ if(NOT ARGOS_BUILD_FOR_SIMULATOR)
   find_package(rclcpp) # try to find rclcpp (representative ROS 2 library)
   find_package(ament_cmake)
   find_package(std_msgs)
+  find_package(std_srvs)
   find_package(sensor_msgs)
   find_package(deepracer_interfaces_pkg) # find the aws deepracer interface package
   include_directories(/opt/ros/foxy/include) # TODO: need to find a better way to do this (or perhaps this is the best?)

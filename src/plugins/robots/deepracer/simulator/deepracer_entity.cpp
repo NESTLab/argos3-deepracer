@@ -1,5 +1,7 @@
 #include "deepracer_entity.h"
 
+#include "deepracer_measures.h"
+
 namespace argos {
 
     /****************************************/
@@ -39,12 +41,20 @@ namespace argos {
             m_pcEmbodiedEntity = new CEmbodiedEntity(this, "body_0", c_position, c_orientation);
             AddComponent(*m_pcEmbodiedEntity);
             /* Wheeled entity and wheel positions (rear left, rear right, front left, front right) */
-            m_pcAckermannWheeledEntity = new CAckermannWheeledEntity(this, "wheels_0", 4);
+            m_pcAckermannWheeledEntity = new CAckermannWheeledEntity(this, "wheels_0");
             AddComponent(*m_pcAckermannWheeledEntity);
-            m_pcAckermannWheeledEntity->SetWheel(0, CVector3(-DEEPRACER_HALF_WHEELBASE_DISTANCE, DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
-            m_pcAckermannWheeledEntity->SetWheel(1, CVector3(-DEEPRACER_HALF_WHEELBASE_DISTANCE, -DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
-            m_pcAckermannWheeledEntity->SetWheel(2, CVector3(DEEPRACER_HALF_WHEELBASE_DISTANCE, DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
-            m_pcAckermannWheeledEntity->SetWheel(3, CVector3(DEEPRACER_HALF_WHEELBASE_DISTANCE, -DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(0,
+                                                 DEEPRACER_REAR_LEFT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(1,
+                                                 DEEPRACER_REAR_RIGHT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(2,
+                                                 DEEPRACER_FRONT_LEFT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(3,
+                                                 DEEPRACER_FRONT_RIGHT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
             /* Camera sensor equipped entity */
             /* LIDAR sensor equipped entity */
             m_pcLIDARSensorEquippedEntity =
@@ -98,12 +108,20 @@ namespace argos {
             AddComponent(*m_pcEmbodiedEntity);
             m_pcEmbodiedEntity->Init(GetNode(t_tree, "body"));
             /* Wheeled entity and wheel positions (rear left, rear right, front left, front right) */
-            m_pcAckermannWheeledEntity = new CAckermannWheeledEntity(this, "wheels_0", 4);
+            m_pcAckermannWheeledEntity = new CAckermannWheeledEntity(this, "wheels_0");
             AddComponent(*m_pcAckermannWheeledEntity);
-            m_pcAckermannWheeledEntity->SetWheel(0, CVector3(-DEEPRACER_HALF_WHEELBASE_DISTANCE, DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
-            m_pcAckermannWheeledEntity->SetWheel(1, CVector3(-DEEPRACER_HALF_WHEELBASE_DISTANCE, -DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
-            m_pcAckermannWheeledEntity->SetWheel(2, CVector3(DEEPRACER_HALF_WHEELBASE_DISTANCE, DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
-            m_pcAckermannWheeledEntity->SetWheel(3, CVector3(DEEPRACER_HALF_WHEELBASE_DISTANCE, -DEEPRACER_HALF_WHEEL_DISTANCE, 0.0f), DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(0,
+                                                 DEEPRACER_REAR_LEFT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(1,
+                                                 DEEPRACER_REAR_RIGHT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(2,
+                                                 DEEPRACER_FRONT_LEFT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
+            m_pcAckermannWheeledEntity->SetWheel(3,
+                                                 DEEPRACER_FRONT_RIGHT_WHEEL_POS_WRT_BASE,
+                                                 DEEPRACER_WHEEL_RADIUS);
             /* Camera sensor equipped entity */
             // TODO: populate this
             /* LIDAR sensor equipped entity */
@@ -170,8 +188,8 @@ namespace argos {
     void CDeepracerEntity::UpdateComponents() {
         if (m_pcIMUSensorEquippedEntity->IsEnabled())
             m_pcIMUSensorEquippedEntity->Update();
-        if (m_pcCameraSensorEquippedEntity->IsEnabled())
-            m_pcCameraSensorEquippedEntity->Update();
+        // if (m_pcCameraSensorEquippedEntity->IsEnabled())
+        //     m_pcCameraSensorEquippedEntity->Update();
         if (m_pcLIDARSensorEquippedEntity->IsEnabled())
             m_pcLIDARSensorEquippedEntity->Update();
         if (m_pcRABEquippedEntity->IsEnabled())

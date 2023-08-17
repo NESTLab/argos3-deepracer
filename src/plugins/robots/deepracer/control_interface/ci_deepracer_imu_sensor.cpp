@@ -9,13 +9,6 @@ namespace argos {
     /****************************************/
     /****************************************/
 
-    const CCI_DeepracerIMUSensor::SReading& CCI_DeepracerIMUSensor::GetReading() const {
-        return m_sReading;
-    }
-
-    /****************************************/
-    /****************************************/
-
 #ifdef ARGOS_WITH_LUA
     void CCI_DeepracerIMUSensor::CreateLuaState(lua_State* pt_lua_state) {
         CLuaUtility::StartTable(pt_lua_state, "imu");
