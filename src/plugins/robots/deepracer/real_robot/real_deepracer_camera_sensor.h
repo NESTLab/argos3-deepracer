@@ -56,6 +56,7 @@ private:
     pthread_t m_tThread;
     /* Blob ready buffer mutex */
     pthread_mutex_t m_tBlobReadyMutex;
+    pthread_mutex_t m_tImgBufferMutex;
     /* True when new blob readings are available */
     bool m_bNewBlobReadings;
 };

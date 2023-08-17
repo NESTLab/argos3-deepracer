@@ -85,6 +85,7 @@ struct SCameraThreadParams {
     TBlobs& ReadyBuffer;
     TBlobFilters& Filters;
     pthread_mutex_t& Mutex;
+    pthread_mutex_t& ImgMutex;
     bool& NewReadings;
 
     SCameraThreadParams(
@@ -96,6 +97,7 @@ struct SCameraThreadParams {
             TBlobs& c_blob_ready_buffer,
             TBlobFilters& t_blob_filters,
             pthread_mutex_t& t_blob_ready_mutex,
+            pthread_mutex_t& t_img_buffer_mutex,
             bool& b_new_blob_readings) :
             TempBuffer(pch_temp_buffer),
             ImgBuffer(pch_img_buffer),
@@ -104,6 +106,7 @@ struct SCameraThreadParams {
             WorkBuffer(c_blob_work_buffer),
             ReadyBuffer(c_blob_ready_buffer),
             Filters(t_blob_filters),
+            ImgMutex(t_img_buffer_mutex),
             Mutex(t_blob_ready_mutex),
             NewReadings(b_new_blob_readings) {
     }
@@ -158,9 +161,9 @@ static void* CameraThread(void* pvoid_params) {
             ptParams->WorkBuffer.clear();
 
             /* Update the Image buffer with the Temp buffer */
-            pthread_mutex_trylock(&ptParams->Mutex);
+            pthread_mutex_trylock(&ptParams->ImgMutex);
             memcpy(&ptParams->ImgBuffer,&ptParams->TempBuffer,sizeof(ptParams->TempBuffer));
-            pthread_mutex_unlock(&ptParams->Mutex);
+            pthread_mutex_unlock(&ptParams->ImgMutex);
 
         }
         else {
@@ -190,9 +193,9 @@ CRealDeepracerCameraSensor::CRealDeepracerCameraSensor(const std::shared_ptr<CRe
 /****************************************/
 
 void CRealDeepracerCameraSensor::CameraCallback(const sensor_msgs::msg::Image::SharedPtr msg){
-    pthread_mutex_trylock(&m_tBlobReadyMutex);
+    pthread_mutex_trylock(&m_tImgBufferMutex);
     memcpy(&m_pTempBuffer,&msg->data,sizeof(msg->data));
-    pthread_mutex_unlock(&m_tBlobReadyMutex);
+    pthread_mutex_unlock(&m_tImgBufferMutex);
     /* Parse XML */
     m_unWidth = msg->width;
     m_unHeight = msg->height;
@@ -236,6 +239,7 @@ void CRealDeepracerCameraSensor::Init(TConfigurationNode& t_node) {
                 m_tBlobReadyBuffer,
                 m_tBlobFilters,
                 m_tBlobReadyMutex,
+                m_tImgBufferMutex,
                 m_bNewBlobReadings);
         if(pthread_create(&m_tThread, NULL, CameraThread, &sCameraThreadParams) != 0) {
             pthread_mutex_destroy(&m_tBlobReadyMutex);
