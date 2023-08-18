@@ -84,7 +84,7 @@ struct SCameraThreadParams {
     TBlobs& WorkBuffer;
     TBlobs& ReadyBuffer;
     TBlobFilters& Filters;
-    pthread_mutex_t& Mutex;
+    pthread_mutex_t& ReadyMutex;
     pthread_mutex_t& ImgMutex;
     bool& NewReadings;
 
@@ -106,8 +106,8 @@ struct SCameraThreadParams {
             WorkBuffer(c_blob_work_buffer),
             ReadyBuffer(c_blob_ready_buffer),
             Filters(t_blob_filters),
+            ReadyMutex(t_blob_ready_mutex),
             ImgMutex(t_img_buffer_mutex),
-            Mutex(t_blob_ready_mutex),
             NewReadings(b_new_blob_readings) {
     }
 
@@ -153,10 +153,10 @@ static void* CameraThread(void* pvoid_params) {
                 }
             }
             /* Done with blobs, make them available */
-            pthread_mutex_trylock(&ptParams->Mutex);
+            pthread_mutex_trylock(&ptParams->ReadyMutex);
             ptParams->NewReadings = true;
             ptParams->ReadyBuffer.swap(ptParams->WorkBuffer);
-            pthread_mutex_unlock(&ptParams->Mutex);
+            pthread_mutex_unlock(&ptParams->ReadyMutex);
             /* Clear work buffer for new image */
             ptParams->WorkBuffer.clear();
 
@@ -194,7 +194,7 @@ CRealDeepracerCameraSensor::CRealDeepracerCameraSensor(const std::shared_ptr<CRe
 
 void CRealDeepracerCameraSensor::CameraCallback(const sensor_msgs::msg::Image::SharedPtr msg){
     pthread_mutex_trylock(&m_tImgBufferMutex);
-    memcpy(&m_pTempBuffer,&msg->data,sizeof(msg->data));
+    memcpy(&m_pchTempBuffer,&msg->data,sizeof(msg->data));
     pthread_mutex_unlock(&m_tImgBufferMutex);
     /* Parse XML */
     m_unWidth = msg->width;
@@ -225,13 +225,14 @@ void CRealDeepracerCameraSensor::Init(TConfigurationNode& t_node) {
             << m_unHeight
             << ")" << std::endl;
         /* Create data mutex */
-        if(pthread_mutex_init(&m_tBlobReadyMutex, NULL) != 0) {
+        if(pthread_mutex_init(&m_tBlobReadyMutex, NULL) != 0 &&
+                pthread_mutex_init(&m_tImgBufferMutex, NULL) != 0) {
             delete[] m_pchImgBuffer;
             THROW_ARGOSEXCEPTION("pthread_mutex_init: " << strerror(errno));
         }
         /* Spawn worker thread */
         SCameraThreadParams sCameraThreadParams(
-                m_pTempBuffer,
+                m_pchTempBuffer,
                 m_pchImgBuffer,
                 m_unWidth,
                 m_unHeight,
@@ -259,13 +260,18 @@ void CRealDeepracerCameraSensor::Init(TConfigurationNode& t_node) {
 void CRealDeepracerCameraSensor::Destroy() {
     /* Release mutex */
     pthread_mutex_unlock(&m_tBlobReadyMutex);
+    pthread_mutex_unlock(&m_tImgBufferMutex);
     /* Stop worker thread */
     pthread_cancel(m_tThread);
     pthread_join(m_tThread, NULL);
+
     /* Destroy mutex */
     pthread_mutex_destroy(&m_tBlobReadyMutex);
+    pthread_mutex_destroy(&m_tImgBufferMutex);
+
     /* Dispose of image buffer */
     delete[] m_pchImgBuffer;
+    delete[] m_pchTempBuffer;
     LOG << "[INFO] Camera stopped" << std::endl;
 }
 

@@ -2,7 +2,6 @@
 #define REAL_DEEPRACER_CAMERA_SENSOR_H
 #include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_camera_sensor.h>
 #include <argos3/plugins/robots/deepracer/real_robot/real_deepracer_device.h>
-#include <argos3/plugins/robots/deepracer/real_robot/real_deepracer.h>
 #include <sensor_msgs/msg/image.hpp>
 #include <pthread.h>
 
@@ -44,7 +43,7 @@ private:
     void CameraCallback(const sensor_msgs::msg::Image::SharedPtr msg);
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr m_ptCameraSubscription;
     /* Image buffer */
-    unsigned char*  m_pTempBuffer;
+    unsigned char*  m_pchTempBuffer;
     unsigned char* m_pchImgBuffer;
     /* Work buffer for blob detection */
     CCI_DeepracerCameraSensor::TBlobs m_tBlobWorkBuffer;
