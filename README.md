@@ -11,11 +11,11 @@ SWARM ? Argos
     - `plugins/robots/deepracer/simulator/ackermann_wheeled_entity.*` -> `plugins/simulator/entities/ackermann_wheeled_entity.*`
     - make generic the imu sensor?
 - ~~complete deepracer_measures file~~
-- obtain mass, max force and max torque values for `dynamics2d_deepracer_model`.
-    - what are the units of force and torque? also, [what is force for](https://github.com/ilpincy/argos3/blob/096d497565d47f0907e1ac7162143150bfff7181/src/plugins/simulator/physics_engines/dynamics2d/dynamics2d_velocity_control.cpp#L63)?
+- ~~obtain mass, max force and max torque values for `dynamics2d_deepracer_model`.~~
+    - ~~what are the units of force and torque? also, [what is force for](https://github.com/ilpincy/argos3/blob/096d497565d47f0907e1ac7162143150bfff7181/src/plugins/simulator/physics_engines/dynamics2d/dynamics2d_velocity_control.cpp#L63)?~~
 - complete the following classes (do global search on "TODO"s):
-    - dynamics2d_deepracer_model
-    - deepracer_entity: the camera and lidar entities to be added, shape of the robot
+    - ~~dynamics2d_deepracer_model~~
+    - ~~deepracer_entity: the camera and lidar entities to be added, shape of the robot~~
     - ~~lidar default sensor (may have been implemented by Nhi already)~~
 - ~~remove the imu equipped entity (based on the [positioning sensor](https://github.com/ilpincy/argos3/blob/master/src/plugins/robots/generic/simulator/positioning_default_sensor.h) we can just use the sensor without the entity)~~
 
