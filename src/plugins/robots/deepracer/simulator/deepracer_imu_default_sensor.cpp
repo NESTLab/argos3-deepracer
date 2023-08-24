@@ -12,9 +12,6 @@ namespace argos {
     CDeepracerIMUDefaultSensor::CDeepracerIMUDefaultSensor() : m_pcEmbodiedEntity(nullptr),
                                                                m_pcRNG(nullptr),
                                                                m_bAddNoise(false),
-                                                               m_cCurrentPosition(CVector3::ZERO),
-                                                               m_cCurrentOrientation(CQuaternion()),
-                                                               m_cCurrentLinVel(CVector3::ZERO),
                                                                m_cSpace(CSimulator::GetInstance().GetSpace()) {}
 
     /****************************************/
@@ -31,7 +28,7 @@ namespace argos {
 
     void CDeepracerIMUDefaultSensor::Init(TConfigurationNode& t_tree) {
         try {
-            CCI_PositioningSensor::Init(t_tree);
+            CCI_DeepracerIMUSensor::Init(t_tree);
             /* Parse noise range */
             GetNodeAttributeOrDefault(t_tree, "lin_acc_noise_range", m_cLinAccNoiseRange, m_cLinAccNoiseRange);
             GetNodeAttributeOrDefault(t_tree, "ang_vel_noise_range", m_cAngVelNoiseRange, m_cAngVelNoiseRange);
@@ -45,7 +42,7 @@ namespace argos {
             UInt32 nNumTicksPerSec;
 
             TConfigurationNode& tNode =
-                GetNode(GetNode(GetSimulator().GetConfigurationRoot(), "framework"), "experiment");
+                GetNode(GetNode(CSimulator::GetInstance().GetConfigurationRoot(), "framework"), "experiment");
             GetNodeAttribute(tNode, "ticks_per_second", nNumTicksPerSec);
 
             m_fNumTicksPerSec = static_cast<Real>(nNumTicksPerSec);
@@ -79,7 +76,7 @@ namespace argos {
         m_cCurrentPosition = m_pcEmbodiedEntity->GetOriginAnchor().Position;
 
         /* Compute angular velocity */
-        (m_pcEmbodiedEntity->GetOriginAnchor().Orientation - m_cCurrentOrientation).ToEulerAngles(m_sAngVelEuler.X, m_sAngVelEuler.Y, m_sAngVelEuler.Z);
+        (m_pcEmbodiedEntity->GetOriginAnchor().Orientation - m_cCurrentOrientation).ToEulerAngles(m_sAngVelEuler.Z, m_sAngVelEuler.Y, m_sAngVelEuler.X);
 
         m_sAngVelEuler.ToCVector3(m_sReading.AngVelocity);
 
@@ -92,9 +89,9 @@ namespace argos {
             m_sReading.LinAcceleration += CVector3(m_pcRNG->Uniform(m_cLinAccNoiseRange),
                                                    m_pcRNG->Uniform(m_cLinAccNoiseRange),
                                                    m_pcRNG->Uniform(m_cLinAccNoiseRange));
-            m_sReading.AngVelocity += CVector3(m_pcRNG->Uniform(m_cAngVelNoiseRange),
-                                               m_pcRNG->Uniform(m_cAngVelNoiseRange),
-                                               m_pcRNG->Uniform(m_cAngVelNoiseRange));
+            m_sReading.AngVelocity += CVector3(m_pcRNG->Uniform(m_cAngVelNoiseRange).GetValue(),
+                                               m_pcRNG->Uniform(m_cAngVelNoiseRange).GetValue(),
+                                               m_pcRNG->Uniform(m_cAngVelNoiseRange).GetValue());
         }
     }
 
@@ -128,7 +125,7 @@ namespace argos {
                     "      ...\n"
                     "      <sensors>\n"
                     "        ...\n"
-                    "        <positioning implementation=\"default\" />\n"
+                    "        <deepracer_imu implementation=\"default\" />\n"
                     "        ...\n"
                     "      </sensors>\n"
                     "      ...\n"
@@ -151,7 +148,7 @@ namespace argos {
                     "      ...\n"
                     "      <sensors>\n"
                     "        ...\n"
-                    "        <positioning implementation=\"default\"\n"
+                    "        <deepracer_imu implementation=\"default\"\n"
                     "                     lin_acc_noise_range=\"-0.1:0.2\"\n"
                     "                     ang_vel_noise_range=\"-10.5:13.7\"\n"
                     "        ...\n"

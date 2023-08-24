@@ -71,6 +71,9 @@ namespace argos {
 
         /** Noise factor stddev (Gaussian model) for each wheel  */
         Real m_fNoiseFactorStdDev[4];
+
+        /** Wheel velocities */
+        Real m_fCurrentVelocity[4];
     };
 
 }

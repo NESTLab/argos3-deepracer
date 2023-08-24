@@ -5,7 +5,6 @@ namespace argos {
     class CControllableEntity;
     class CEmbodiedEntity;
     class CDeepracerEntity;
-    class CIMUSensorEquippedEntity;
     class CRABEquippedEntity;
     class CProximitySensorEquippedEntity;
     class CBatteryEquippedEntity;
@@ -31,7 +30,8 @@ namespace argos {
                          const CVector3&    c_position       = CVector3(),
                          const CQuaternion& c_orientation    = CQuaternion(),
                          Real               f_rab_range      = 3.0f,
-                         size_t             un_rab_data_size = 50);
+                         size_t             un_rab_data_size = 50,
+                         const std::string& str_bat_model    = "");
 
         virtual void Init(TConfigurationNode& t_tree);
         virtual void Reset();
@@ -51,10 +51,6 @@ namespace argos {
             return *m_pcLIDARSensorEquippedEntity;
         }
 
-        inline CIMUSensorEquippedEntity& GetIMUSensorEquippedEntity() {
-            return *m_pcIMUSensorEquippedEntity;
-        }
-
         inline CRABEquippedEntity& GetRABEquippedEntity() {
             return *m_pcRABEquippedEntity;
         }
@@ -72,7 +68,6 @@ namespace argos {
         CControllableEntity*            m_pcControllableEntity;
         CEmbodiedEntity*                m_pcEmbodiedEntity;
         CProximitySensorEquippedEntity* m_pcLIDARSensorEquippedEntity;
-        CIMUSensorEquippedEntity*       m_pcIMUSensorEquippedEntity;
         CRABEquippedEntity*             m_pcRABEquippedEntity;
         CAckermannWheeledEntity*        m_pcAckermannWheeledEntity;
         CBatteryEquippedEntity*         m_pcBatteryEquippedEntity;

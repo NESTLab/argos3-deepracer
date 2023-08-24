@@ -37,7 +37,6 @@ if(NOT ARGOS_BUILD_FOR_SIMULATOR)
   find_package(sensor_msgs)
   find_package(deepracer_interfaces_pkg) # find the aws deepracer interface package
   include_directories(/opt/ros/foxy/include) # TODO: need to find a better way to do this (or perhaps this is the best?)
-  message(DEBUG "Finding the rclcpp package")
   if(NOT rclcpp_FOUND)
     message(FATAL_ERROR "Cannot find rclcpp library, please ensure that ROS 2 is installed")
   endif(NOT rclcpp_FOUND)

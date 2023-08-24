@@ -46,7 +46,7 @@ namespace argos {
 
     void CDeepracerLIDARDefaultSensor::Init(TConfigurationNode& t_tree) {
         try {
-            CCI_DeepracerIVLIDARSensor::Init(t_tree);
+            CCI_DeepracerLIDARSensor::Init(t_tree);
             /* How many readings? */
             GetNodeAttributeOrDefault(t_tree, "num_readings", m_unNumReadings, m_unNumReadings);
             m_pcProximityEntity->AddSensorFan(
@@ -57,7 +57,7 @@ namespace argos {
                 DEEPRACER_LIDAR_SENSORS_FAN_RADIUS + DEEPRACER_LIDAR_SENSORS_RING_RANGE.GetMax(),
                 m_unNumReadings,
                 m_pcEmbodiedEntity->GetOriginAnchor());
-            m_pfReadings = new long[m_unNumReadings];
+            m_pfReadings = new Real[m_unNumReadings];
             /* Show rays? */
             GetNodeAttributeOrDefault(t_tree, "show_rays", m_bShowRays, m_bShowRays);
             /* Parse noise level */
@@ -142,7 +142,7 @@ namespace argos {
     /****************************************/
     /****************************************/
 
-    long CDeepracerLIDARDefaultSensor::GetReading(UInt32 un_idx) const {
+    Real CDeepracerLIDARDefaultSensor::GetReading(UInt32 un_idx) const {
         return m_pfReadings[un_idx];
     }
 
@@ -151,6 +151,22 @@ namespace argos {
 
     size_t CDeepracerLIDARDefaultSensor::GetNumReadings() const {
         return m_unNumReadings;
+    }
+
+    /****************************************/
+    /****************************************/
+
+    void CDeepracerLIDARDefaultSensor::PowerOn() {
+        m_bPowerStateOn = true;
+        m_pcProximityEntity->SetEnabled(m_bPowerStateOn);
+    }
+
+    /****************************************/
+    /****************************************/
+
+    void CDeepracerLIDARDefaultSensor::PowerOff() {
+        m_bPowerStateOn = false;
+        m_pcProximityEntity->SetEnabled(m_bPowerStateOn);
     }
 
     /****************************************/
@@ -201,7 +217,7 @@ namespace argos {
                     "    ...\n"
                     "  </controllers>\n\n"
                     "It is possible to change the default number of readings to make computation\n"
-                    "faster. The default number of readings is 682, but using the 'num_readings'\n"
+                    "faster. The default number of readings is 600, but using the 'num_readings'\n"
                     "attribute you can change it to a different value:\n\n"
                     "  <controllers>\n"
                     "    ...\n"

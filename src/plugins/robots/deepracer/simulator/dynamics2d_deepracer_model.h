@@ -9,7 +9,7 @@ namespace argos {
 #include <argos3/plugins/robots/deepracer/simulator/deepracer_entity.h>
 #include <argos3/plugins/simulator/physics_engines/dynamics2d/dynamics2d_single_body_object_model.h>
 
-#include "dynamics2d_ackermann_steering_control.h" // TODO: may need to switch paths if implementation is generic enough
+#include "dynamics2d_ackermannsteering_control.h" // TODO: may need to switch paths if implementation is generic enough
 
 namespace argos {
 
@@ -27,11 +27,16 @@ namespace argos {
     private:
 
         CDeepracerEntity& m_cDeepracerEntity;
+
         CAckermannWheeledEntity& m_cAckerWheeledEntity;
 
         CDynamics2DAckermannSteeringControl m_cAckerSteering;
 
-        const Real* m_fCurrentWheelVelocity;
+        const Real* m_pfCurrentWheelThrottleSpeed;
+
+        const Real* m_pfCurrentSteeringAngle;
+
+        cpVect m_ptConvexHullCpVect[4];
     };
 
 }

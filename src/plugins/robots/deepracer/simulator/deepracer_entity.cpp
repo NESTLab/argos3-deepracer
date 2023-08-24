@@ -1,5 +1,12 @@
 #include "deepracer_entity.h"
 
+#include <argos3/core/simulator/entity/controllable_entity.h>
+#include <argos3/core/simulator/entity/embodied_entity.h>
+#include <argos3/core/simulator/space/space.h>
+#include <argos3/plugins/simulator/entities/battery_equipped_entity.h>
+#include <argos3/plugins/simulator/entities/proximity_sensor_equipped_entity.h>
+#include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
+
 #include "deepracer_measures.h"
 
 namespace argos {
@@ -12,7 +19,6 @@ namespace argos {
           m_pcControllableEntity(NULL),
           m_pcEmbodiedEntity(NULL),
           m_pcLIDARSensorEquippedEntity(NULL),
-          m_pcIMUSensorEquippedEntity(NULL),
           m_pcRABEquippedEntity(NULL),
           m_pcAckermannWheeledEntity(NULL) {
     }
@@ -25,12 +31,12 @@ namespace argos {
                                        const CVector3&    c_position,
                                        const CQuaternion& c_orientation,
                                        Real               f_rab_range,
-                                       size_t             un_rab_data_sizel)
+                                       size_t             un_rab_data_size,
+                                       const std::string& str_bat_model)
         : CComposableEntity(NULL, str_id),
           m_pcControllableEntity(NULL),
           m_pcEmbodiedEntity(NULL),
           m_pcLIDARSensorEquippedEntity(NULL),
-          m_pcIMUSensorEquippedEntity(NULL),
           m_pcRABEquippedEntity(NULL),
           m_pcAckermannWheeledEntity(NULL) {
         try {
@@ -61,11 +67,6 @@ namespace argos {
                 new CProximitySensorEquippedEntity(this,
                                                    "lidar");
             AddComponent(*m_pcLIDARSensorEquippedEntity);
-            /* IMU sensor equipped entity */
-            m_pcIMUSensorEquippedEntity =
-                new CDeepracerIMUSensorEquippedEntity(this,
-                                                      "imu_0",
-                                                      m_pcEmbodiedEntity->GetOriginAnchor());
             /* RAB equipped entity */
             m_pcRABEquippedEntity =
                 new CRABEquippedEntity(this,
@@ -129,11 +130,6 @@ namespace argos {
                 new CProximitySensorEquippedEntity(this,
                                                    "lidar");
             AddComponent(*m_pcLIDARSensorEquippedEntity);
-            /* IMU sensor equipped entity */
-            m_pcIMUSensorEquippedEntity =
-                new CDeepracerIMUSensorEquippedEntity(this,
-                                                      "imu_0",
-                                                      m_pcEmbodiedEntity->GetOriginAnchor());
             /* RAB equipped entity */
             Real fRange = 3.0f;
             GetNodeAttributeOrDefault(t_tree, "rab_range", fRange, fRange);
@@ -186,8 +182,6 @@ namespace argos {
     /****************************************/
 
     void CDeepracerEntity::UpdateComponents() {
-        if (m_pcIMUSensorEquippedEntity->IsEnabled())
-            m_pcIMUSensorEquippedEntity->Update();
         // if (m_pcCameraSensorEquippedEntity->IsEnabled())
         //     m_pcCameraSensorEquippedEntity->Update();
         if (m_pcLIDARSensorEquippedEntity->IsEnabled())

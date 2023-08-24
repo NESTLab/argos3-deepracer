@@ -22,7 +22,7 @@ namespace argos {
         /**
          * Class constructor
          */
-        CCI_DeepracerIMUSensor();
+        CCI_DeepracerIMUSensor() {};
 
         /**
          * Class destructor

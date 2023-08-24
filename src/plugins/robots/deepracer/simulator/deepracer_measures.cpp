@@ -12,7 +12,17 @@
 namespace argos {
     const Real DEEPRACER_BASE_ELEVATION = 0.023249;
     const Real DEEPRACER_BASE_HEIGHT    = 0.165; // measured
+    const Real DEEPRACER_BASE_LENGTH    = 0.226; // measured/guesstimated so that it matches the INERTIA_ZZ value
+    const Real DEEPRACER_BASE_WIDTH     = 0.119; // measured/guesstimated so that it matches the INERTIA_ZZ value
     const Real DEEPRACER_BASE_TOP       = DEEPRACER_BASE_ELEVATION + DEEPRACER_BASE_HEIGHT;
+    const Real DEEPRACER_INERTIA_XX     = 0.004151895;
+    const Real DEEPRACER_INERTIA_YY     = 0.010379737;
+    const Real DEEPRACER_INERTIA_ZZ     = 0.010379737;
+
+    const CVector2 DEEPRACER_BASE_REAR_LEFT   = CVector2(-DEEPRACER_BASE_LENGTH / 2, DEEPRACER_BASE_WIDTH / 2);
+    const CVector2 DEEPRACER_BASE_FRONT_LEFT  = CVector2(DEEPRACER_BASE_LENGTH / 2, DEEPRACER_BASE_WIDTH / 2);
+    const CVector2 DEEPRACER_BASE_FRONT_RIGHT = CVector2(DEEPRACER_BASE_LENGTH / 2, -DEEPRACER_BASE_WIDTH / 2);
+    const CVector2 DEEPRACER_BASE_REAR_RIGHT  = CVector2(-DEEPRACER_BASE_LENGTH / 2, -DEEPRACER_BASE_WIDTH / 2);
 
     const Real DEEPRACER_WHEEL_RADIUS       = 0.035;    // measured; 0.005 more than specified in the urdf file
     const Real DEEPRACER_WHEEL_DISTANCE     = 0.159202; // from deepracer_ros_control.xacro
@@ -31,7 +41,7 @@ namespace argos {
     const Real         DEEPRACER_LIDAR_SENSORS_FAN_RADIUS = 0.0;                                            // no radius offset; the min observable range is already included below
     const CRadians     DEEPRACER_LIDAR_ANGLE_SPAN(ToRadians(CDegrees(300)));                                // from deepracer.xacro
     const CRadians     DEEPRACER_LIDAR_ANGLE_START = (CRadians::TWO_PI - DEEPRACER_LIDAR_ANGLE_SPAN) * 0.5; // starting sweep angle
-    const CRadians     DEEPRACER_LIDAR_ANGLE_END   = -DEEPRACER_LIDAR_ANGLE_START;                          // ending sweep angle
+    const CRadians     DEEPRACER_LIDAR_ANGLE_END   = CRadians::TWO_PI - DEEPRACER_LIDAR_ANGLE_START;        // ending sweep angle
     const CRange<Real> DEEPRACER_LIDAR_SENSORS_RING_RANGE(0.15, 10.0);                                      // from deepracer.xacro
 }
 

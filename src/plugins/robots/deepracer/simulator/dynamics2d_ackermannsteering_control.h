@@ -35,9 +35,9 @@ namespace argos {
 
     private:
 
-        Real m_fWheelbaseDistance;
-
         Real m_fInterwheelDistance;
+
+        Real m_fWheelbaseDistance;
     };
 
 }

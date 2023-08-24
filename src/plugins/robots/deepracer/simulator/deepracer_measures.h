@@ -8,7 +8,17 @@
 namespace argos {
     extern const Real DEEPRACER_BASE_ELEVATION;
     extern const Real DEEPRACER_BASE_HEIGHT;
+    extern const Real DEEPRACER_BASE_LENGTH;
+    extern const Real DEEPRACER_BASE_WIDTH;
     extern const Real DEEPRACER_BASE_TOP;
+    extern const Real        DEEPRACER_INERTIA_XX;
+    extern const Real        DEEPRACER_INERTIA_YY;
+    extern const Real        DEEPRACER_INERTIA_ZZ;
+
+    extern const CVector2 DEEPRACER_BASE_REAR_LEFT;
+    extern const CVector2 DEEPRACER_BASE_FRONT_LEFT;
+    extern const CVector2 DEEPRACER_BASE_FRONT_RIGHT;
+    extern const CVector2 DEEPRACER_BASE_REAR_RIGHT;
 
     extern const Real DEEPRACER_WHEEL_RADIUS;
     extern const Real DEEPRACER_WHEEL_DISTANCE;

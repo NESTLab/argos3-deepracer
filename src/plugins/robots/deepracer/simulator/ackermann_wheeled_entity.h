@@ -26,9 +26,9 @@ namespace argos {
             return m_unNumWheels;
         }
 
-        void SetWheel(UInt32 un_index,
+        void SetWheel(UInt32          un_index,
                       const CVector3& c_position,
-                      Real f_radius);
+                      Real            f_radius);
 
         const CVector3& GetWheelPosition(size_t un_index) const;
 
@@ -42,8 +42,8 @@ namespace argos {
             return m_pfWheelRadia;
         }
 
-        inline const Real GetSteeringAngle() const {
-            return m_fSteeringAngle;
+        inline const Real* GetSteeringAngle() const {
+            return m_pfSteeringAngle;
         }
 
         Real GetWheelVelocity(size_t un_index) const;
@@ -61,10 +61,10 @@ namespace argos {
     private:
 
         const size_t m_unNumWheels = 4;
-        CVector3* m_pcWheelPositions;
-        Real m_fSteeringAngle;
-        Real* m_pfWheelRadia;
-        Real* m_pfWheelVelocities;
+        CVector3*    m_pcWheelPositions;
+        Real*        m_pfSteeringAngle;
+        Real*        m_pfWheelRadia;
+        Real*        m_pfWheelVelocities;
     };
 
 }

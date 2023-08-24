@@ -1,9 +1,3 @@
-/**
- * @file <argos3/plugins/simulator/sensors/positioning_default_sensor.h>
- *
- * @author Carlo Pinciroli - <ilpincy@gmail.com>
- */
-
 #ifndef DEEPRACER_IMU_DEFAULT_SENSOR_H
 #define DEEPRACER_IMU_DEFAULT_SENSOR_H
 

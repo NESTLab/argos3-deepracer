@@ -8,8 +8,8 @@ namespace argos {
     class CDeepracerLIDARDefaultSensor;
 }
 
+#include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_lidar_sensor.h>
 #include <argos3/plugins/robots/generic/simulator/proximity_default_sensor.h>
-#include <argos3/plugins/robots/kheperaiv/control_interface/ci_deepracer_lidar_sensor.h>
 
 namespace argos {
 
@@ -35,15 +35,9 @@ namespace argos {
 
         virtual size_t GetNumReadings() const;
 
-        inline void PowerOn() {
-            m_bPowerStateOn = true;
-            m_pcProximityEntity->SetEnabled(m_bPowerStateOn);
-        }
+        virtual void PowerOn();
 
-        inline void PowerOff() {
-            m_bPowerStateOn = false;
-            m_pcProximityEntity->SetEnabled(m_bPowerStateOn);
-        }
+        virtual void PowerOff();
 
     private:
 

@@ -68,7 +68,7 @@ namespace argos {
 
     void CAckermannSteeringDefaultActuator::Init(TConfigurationNode& t_tree) {
         try {
-            CCI_DifferentialSteeringActuator::Init(t_tree);
+            CCI_AckermannSteeringActuator::Init(t_tree);
             /* Check if any noise attribute was specified */
             bool bNoise =
                 CHECK_ATTRIBUTE("bias_avg") ||
