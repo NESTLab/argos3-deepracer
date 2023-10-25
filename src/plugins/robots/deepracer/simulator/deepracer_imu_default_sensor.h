@@ -47,6 +47,7 @@ namespace argos {
 
         virtual void Reset();
 
+
     protected:
 
         /** Reference to embodied entity associated to this sensor */
@@ -67,14 +68,19 @@ namespace argos {
         /** Reference to the space */
         CSpace& m_cSpace;
 
+
         /** Current recorded linear position */
         CVector3 m_cCurrentPosition;
+
 
         /** Current recorded orientation */
         CQuaternion m_cCurrentOrientation;
 
         /** Current linear velocity */
         CVector3 m_cCurrentLinVel;
+
+        /** Previous linear velocity */
+        CVector3 m_cPreviousLinVel;
 
         /** Struct to store and convert computed angular velocities */
         SEulerAnglesInCRadians m_sAngVelEuler;

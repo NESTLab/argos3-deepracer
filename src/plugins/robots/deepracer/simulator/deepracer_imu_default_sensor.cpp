@@ -3,6 +3,7 @@
 #include <argos3/core/simulator/entity/composable_entity.h>
 #include <argos3/core/simulator/entity/embodied_entity.h>
 #include <argos3/core/simulator/simulator.h>
+#include <argos3/core/utility/logging/argos_log.h>
 
 namespace argos {
 
@@ -21,6 +22,8 @@ namespace argos {
         m_pcEmbodiedEntity    = &(c_entity.GetComponent<CEmbodiedEntity>("body"));
         m_cCurrentPosition    = m_pcEmbodiedEntity->GetOriginAnchor().Position;
         m_cCurrentOrientation = m_pcEmbodiedEntity->GetOriginAnchor().Orientation;
+        
+
     }
 
     /****************************************/
@@ -58,6 +61,7 @@ namespace argos {
     /****************************************/
 
     void CDeepracerIMUDefaultSensor::Update() {
+
         /* sensor is disabled--nothing to do */
         if (IsDisabled()) {
             return;
@@ -69,20 +73,29 @@ namespace argos {
         m_fPreviousTime = m_fCurrentTime;
 
         /* Compute linear acceleration */
+
         m_sReading.LinAcceleration = m_cCurrentLinVel; // act as a temporary storage
 
-        m_cCurrentLinVel = (m_pcEmbodiedEntity->GetOriginAnchor().Position - m_cCurrentPosition) / m_fDeltaTime;
+        m_cCurrentLinVel = m_cCurrentPosition;
 
         m_cCurrentPosition = m_pcEmbodiedEntity->GetOriginAnchor().Position;
+       
+        m_cCurrentLinVel = (m_cCurrentPosition - m_cCurrentLinVel) / m_fDeltaTime;
+
+
+        m_sReading.LinAcceleration = (m_cCurrentLinVel - m_sReading.LinAcceleration) / m_fDeltaTime;
 
         /* Compute angular velocity */
-        (m_pcEmbodiedEntity->GetOriginAnchor().Orientation - m_cCurrentOrientation).ToEulerAngles(m_sAngVelEuler.Z, m_sAngVelEuler.Y, m_sAngVelEuler.X);
 
+        (m_pcEmbodiedEntity->GetOriginAnchor().Orientation.operator*(m_cCurrentOrientation.Inverse())).ToEulerAngles(m_sAngVelEuler.Z, m_sAngVelEuler.Y, m_sAngVelEuler.X);
+        
         m_sAngVelEuler.ToCVector3(m_sReading.AngVelocity);
-
+        
         m_sReading.AngVelocity /= m_fDeltaTime;
 
         m_cCurrentOrientation = m_pcEmbodiedEntity->GetOriginAnchor().Orientation;
+
+       
 
         /* Add noise */
         if (m_bAddNoise) {
