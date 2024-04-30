@@ -107,4 +107,4 @@ void CDeepracerTestCamera::ControlStep() {
  * controller class to instantiate.
  * See also the configuration files for an example of how this is used.
  */
-REGISTER_CONTROLLER(CDeepracerTestCamera, "deepracer_diffusion_controller")
+REGISTER_CONTROLLER(CDeepracerTestCamera, "deepracer_test_camera")

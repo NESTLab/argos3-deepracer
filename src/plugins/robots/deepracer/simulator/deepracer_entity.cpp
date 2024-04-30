@@ -6,7 +6,6 @@
 #include <argos3/plugins/simulator/entities/battery_equipped_entity.h>
 #include <argos3/plugins/simulator/entities/proximity_sensor_equipped_entity.h>
 #include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
-#include <argos3/plugins/simulator/entities/perspective_camera_equipped_entity.h>
 
 #include "deepracer_measures.h"
 
@@ -20,7 +19,6 @@ namespace argos {
           m_pcControllableEntity(NULL),
           m_pcEmbodiedEntity(NULL),
           m_pcLIDARSensorEquippedEntity(NULL),
-          m_pcCameraEntity(NULL),
           m_pcRABEquippedEntity(NULL),
           m_pcAckermannWheeledEntity(NULL) {
     }
@@ -39,7 +37,6 @@ namespace argos {
           m_pcControllableEntity(NULL),
           m_pcEmbodiedEntity(NULL),
           m_pcLIDARSensorEquippedEntity(NULL),
-          m_pcCameraEntity(NULL),
           m_pcRABEquippedEntity(NULL),
           m_pcAckermannWheeledEntity(NULL) {
         try {
@@ -64,18 +61,6 @@ namespace argos {
             m_pcAckermannWheeledEntity->SetWheel(3,
                                                  DEEPRACER_FRONT_RIGHT_WHEEL_POS_WRT_BASE,
                                                  DEEPRACER_WHEEL_RADIUS);
-            /* Camera sensor equipped entity */
-            m_pcCameraEntity =
-                    new CPerspectiveCameraEquippedEntity(this,
-                                                         "perspective_camera",
-                                                         CRadians(60*ARGOS_PI/180),
-                                                         12,
-                                                         Real(120),
-                                                         SInt32(160),
-                                                         SInt32(120),
-                                                         m_pcEmbodiedEntity->GetOriginAnchor());
-            AddComponent(*m_pcCameraEntity);
-
             /* LIDAR sensor equipped entity */
             m_pcLIDARSensorEquippedEntity =
                 new CProximitySensorEquippedEntity(this,
@@ -137,18 +122,6 @@ namespace argos {
             m_pcAckermannWheeledEntity->SetWheel(3,
                                                  DEEPRACER_FRONT_RIGHT_WHEEL_POS_WRT_BASE,
                                                  DEEPRACER_WHEEL_RADIUS);
-            /* Camera sensor equipped entity */
-            // TODO: check this
-            m_pcCameraEntity =
-                    new CPerspectiveCameraEquippedEntity(this,
-                                                         "perspective_camera",
-                                                         CRadians(60*ARGOS_PI/180),
-                                                         12,
-                                                         Real(120),
-                                                         SInt32(160),
-                                                         SInt32(120),
-                                                         m_pcEmbodiedEntity->GetOriginAnchor());
-            AddComponent(*m_pcCameraEntity);
             /* LIDAR sensor equipped entity */
             m_pcLIDARSensorEquippedEntity =
                 new CProximitySensorEquippedEntity(this,
@@ -206,8 +179,6 @@ namespace argos {
     /****************************************/
 
     void CDeepracerEntity::UpdateComponents() {
-        if (m_pcCameraEntity->IsEnabled())
-            m_pcCameraEntity->Update();
         if (m_pcLIDARSensorEquippedEntity->IsEnabled())
             m_pcLIDARSensorEquippedEntity->Update();
         if (m_pcRABEquippedEntity->IsEnabled())

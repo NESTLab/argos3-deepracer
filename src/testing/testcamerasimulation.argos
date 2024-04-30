@@ -16,7 +16,7 @@
   <!-- *************** -->
   <controllers>
 
-    <deepracer_diffusion_controller id="dr0dc"
+    <deepracer_test_camera id="dr0dc"
                                library="build/testing/libdeepracer_camera">
       <actuators>
         <ackermann_steering implementation="default" />
@@ -27,7 +27,7 @@
         <deepracer_lidar implementation="default" num_readings="100" show_rays="true" />
       </sensors>
       <params alpha="7.5" delta="0.1" velocity="5" />
-    </deepracer_diffusion_controller>
+    </deepracer_test_camera>
 
   </controllers>
 
