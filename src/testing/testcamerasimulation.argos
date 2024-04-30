@@ -22,7 +22,7 @@
         <ackermann_steering implementation="default" />
       </actuators>
       <sensors>
-        <deepracer_perspective_camera implementation="default" />
+        <deepracer_camera implementation="default" />
         <deepracer_imu implementation="default" />
         <deepracer_lidar implementation="default" num_readings="100" show_rays="true" />
       </sensors>

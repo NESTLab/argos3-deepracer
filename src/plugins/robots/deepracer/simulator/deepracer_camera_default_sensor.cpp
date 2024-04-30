@@ -1,168 +1,25 @@
 #include "deepracer_camera_default_sensor.h"
 #include <argos3/core/simulator/simulator.h>
-#include <argos3/core/simulator/space/positional_indices/positional_index.h>
 #include <argos3/core/simulator/entity/composable_entity.h>
-#include <argos3/core/simulator/entity/embodied_entity.h>
-#include <argos3/plugins/simulator/entities/led_entity.h>
-#include <argos3/plugins/simulator/entities/perspective_camera_equipped_entity.h>
-#include <argos3/plugins/simulator/media/led_medium.h>
+#include <argos3/plugins/robots/generic/simulator/camera_sensor_algorithm.h>
 
 namespace argos {
 
     /****************************************/
     /****************************************/
 
-    class CPerspectiveCameraLEDCheckOperation : public CPositionalIndex<CLEDEntity>::COperation {
-
-    public:
-
-        CPerspectiveCameraLEDCheckOperation(
-                CCI_ColoredBlobPerspectiveCameraSensor::TBlobList& t_blobs,
-                CPerspectiveCameraEquippedEntity& c_cam_entity,
-                CEmbodiedEntity& c_embodied_entity,
-                CControllableEntity& c_controllable_entity,
-                bool b_show_rays,
-                Real f_noise_std_dev) :
-                m_tBlobs(t_blobs),
-                m_cCamEntity(c_cam_entity),
-                m_cEmbodiedEntity(c_embodied_entity),
-                m_cControllableEntity(c_controllable_entity),
-                m_bShowRays(b_show_rays),
-                m_fNoiseStdDev(f_noise_std_dev),
-                m_pcRNG(nullptr) {
-            m_pcRootSensingEntity = &m_cEmbodiedEntity.GetRootEntity();
-            if(m_fNoiseStdDev > 0.0f) {
-                m_pcRNG = CRandom::CreateRNG("argos");
-            }
-        }
-        virtual ~CPerspectiveCameraLEDCheckOperation() {
-            while(! m_tBlobs.empty()) {
-                delete m_tBlobs.back();
-                m_tBlobs.pop_back();
-            }
-        }
-
-        virtual bool operator()(CLEDEntity& c_led) {
-            /* Process this LED only if it's lit */
-            if(c_led.GetColor() != CColor::BLACK) {
-                /* Filter out the LEDs belonging to the sensing entity by checking if they share the same parent entity */
-                if(m_pcRootSensingEntity == &c_led.GetRootEntity()) return true;
-                /* If we are here, it's because the LED must be processed */
-                /* Set the end of the ray for occlusion checking */
-                m_cOcclusionCheckRay.SetEnd(c_led.GetPosition());
-                /* Calculate the vector to LED in the camera-anchor frame of reference */
-                m_cLEDRelative = c_led.GetPosition();
-                m_cLEDRelative -= m_cCamEntity.GetAnchor().Position;
-                m_cLEDRelative.Rotate(m_cInvCameraOrient);
-                /* Calculate the projection of the LED vector into the camera direction */
-                Real fDotProd = m_cLEDRelative.GetX();
-                /* The blob is visible if
-                 * 1. It is within the distance range AND
-                 * 2. It is within the aperture range AND
-                 * 3. There are no occlusions
-                 */
-                if(fDotProd < m_cCamEntity.GetRange() &&
-                   ACos(fDotProd / m_cLEDRelative.Length()) < m_cCamEntity.GetAperture() &&
-                   !GetClosestEmbodiedEntityIntersectedByRay(m_sIntersectionItem,
-                                                             m_cOcclusionCheckRay,
-                                                             m_cEmbodiedEntity)) {
-                    /* The LED is visibile */
-                    /* Calculate the intersection point between the LED ray and the image plane */
-                    m_cLEDRelative.Normalize();
-                    m_cLEDRelative *= m_cCamEntity.GetFocalLength() / m_cLEDRelative.GetX();
-                    /*
-                     * The image plane is perpendicular to the local X axis
-                     * Y points to the left, Z up, the origin is in the image center
-                     * To find the pixel (i,j), we need to flip both Y and Z, and translate the origin
-                     * So that the origin is up-left, the i axis goes to the right, and the j axis goes down
-                     */
-                    SInt32 nI =
-                            static_cast<SInt32>(- m_cCamEntity.GetImagePxWidth() /
-                                                m_cCamEntity.GetImageMtWidth() *
-                                                (m_cLEDRelative.GetY() -
-                                                 m_cCamEntity.GetImageMtWidth() * 0.5f));
-                    SInt32 nJ =
-                            static_cast<SInt32>(- m_cCamEntity.GetImagePxHeight() /
-                                                m_cCamEntity.GetImageMtHeight() *
-                                                (m_cLEDRelative.GetZ() -
-                                                 m_cCamEntity.GetImageMtHeight() * 0.5f));
-                    /* Make sure (i,j) is within the limits */
-                    if((nI >= m_cCamEntity.GetImagePxWidth() || nI < 0) ||
-                       (nJ >= m_cCamEntity.GetImagePxHeight() || nJ < 0))
-                        return true;
-                    /* Add new blob */
-                    m_tBlobs.push_back(
-                            new CCI_ColoredBlobPerspectiveCameraSensor::SBlob(
-                                    c_led.GetColor(), nI, nJ));
-                    /* Draw ray */
-                    if(m_bShowRays) {
-                        m_cControllableEntity.AddCheckedRay(
-                                false,
-                                CRay3(m_cCamEntity.GetAnchor().Position,
-                                      c_led.GetPosition()));
-                    }
-                }
-            }
-            return true;
-        }
-
-        void Setup() {
-            /* Erase blobs */
-            while(! m_tBlobs.empty()) {
-                delete m_tBlobs.back();
-                m_tBlobs.pop_back();
-            }
-            /* Reset ray start */
-            m_cOcclusionCheckRay.SetStart(m_cCamEntity.GetAnchor().Position);
-            /* Calculate inverse of camera orientation */
-            m_cInvCameraOrient = m_cCamEntity.GetAnchor().Orientation.Inverse();
-        }
-
-    private:
-
-        CCI_ColoredBlobPerspectiveCameraSensor::TBlobList& m_tBlobs;
-        CPerspectiveCameraEquippedEntity& m_cCamEntity;
-        CEmbodiedEntity& m_cEmbodiedEntity;
-        CControllableEntity& m_cControllableEntity;
-        CQuaternion m_cInvCameraOrient;
-        bool m_bShowRays;
-        CEntity* m_pcRootSensingEntity;
-        CRadians m_cTmp1, m_cTmp2;
-        CVector3 m_cLEDRelative;
-        SEmbodiedEntityIntersectionItem m_sIntersectionItem;
-        CRay3 m_cOcclusionCheckRay;
-        Real m_fNoiseStdDev;
-        CRandom::CRNG* m_pcRNG;
-    };
-
-    /****************************************/
-    /****************************************/
-
     CDeepracerCameraDefaultSensor::CDeepracerCameraDefaultSensor() :
-            m_pcCamEntity(nullptr),
-            m_pcControllableEntity(nullptr),
+            m_bShowFrustum(false),
             m_pcEmbodiedEntity(nullptr),
-            m_pcLEDIndex(nullptr),
-            m_pcEmbodiedIndex(nullptr),
-            m_bShowRays(false) {
-    }
-
-    /****************************************/
-    /****************************************/
-
-    CDeepracerCameraDefaultSensor::~CDeepracerCameraDefaultSensor() {
-    }
+            m_pcControllableEntity(nullptr) {}
 
     /****************************************/
     /****************************************/
 
     void CDeepracerCameraDefaultSensor::SetRobot(CComposableEntity& c_entity) {
-        /* Get omndirectional camera equipped entity */
-        m_pcCamEntity = &(c_entity.GetComponent<CPerspectiveCameraEquippedEntity>("perspective_camera"));
-        /* Get controllable entity */
-        m_pcControllableEntity = &(c_entity.GetComponent<CControllableEntity>("controller"));
-        /* Get embodied entity */
+        /* Get the embodied and controllable entities */
         m_pcEmbodiedEntity = &(c_entity.GetComponent<CEmbodiedEntity>("body"));
+        m_pcControllableEntity = &(c_entity.GetComponent<CControllableEntity>("controller"));
     }
 
     /****************************************/
@@ -171,27 +28,89 @@ namespace argos {
     void CDeepracerCameraDefaultSensor::Init(TConfigurationNode& t_tree) {
         try {
             /* Parent class init */
-            CCI_ColoredBlobPerspectiveCameraSensor::Init(t_tree);
-            /* Show rays? */
-            GetNodeAttributeOrDefault(t_tree, "show_rays", m_bShowRays, m_bShowRays);
-            /* Parse noise */
-            Real fNoiseStdDev = 0.0f;
-            GetNodeAttributeOrDefault(t_tree, "noise_std_dev", fNoiseStdDev, fNoiseStdDev);
-            /* Get LED medium from id specified in the XML */
-            std::string strMedium;
-            GetNodeAttribute(t_tree, "medium", strMedium);
-            m_pcLEDIndex = &(CSimulator::GetInstance().GetMedium<CLEDMedium>(strMedium).GetIndex());
-            /* Create check operation */
-            m_pcOperation = new CPerspectiveCameraLEDCheckOperation(
-                    m_sReadings.BlobList,
-                    *m_pcCamEntity,
-                    *m_pcEmbodiedEntity,
-                    *m_pcControllableEntity,
-                    m_bShowRays,
-                    fNoiseStdDev);
+            CCI_DeepracerCameraSensor::Init(t_tree);
+            /* Show the frustums */
+            GetNodeAttributeOrDefault(t_tree, "show_frustum", m_bShowFrustum, m_bShowFrustum);
+            /* For each camera */
+            TConfigurationNodeIterator itCamera("camera");
+            for(itCamera = itCamera.begin(&t_tree);
+                itCamera != itCamera.end();
+                ++itCamera) {
+                /* Get camera indentifier */
+                std::string strId;
+                GetNodeAttribute(*itCamera, "id", strId);
+                /* Parse and look up the anchor */
+                std::string strAnchorId;
+                GetNodeAttribute(*itCamera, "anchor", strAnchorId);
+                SAnchor& sAnchor = m_pcEmbodiedEntity->GetAnchor(strAnchorId);
+                /* parse the offset */
+                CVector3 cOffsetPosition;
+                CQuaternion cOffsetOrientation;
+                GetNodeAttribute(*itCamera, "position", cOffsetPosition);
+                GetNodeAttribute(*itCamera, "orientation", cOffsetOrientation);
+                CTransformationMatrix3 cOffset(cOffsetOrientation, cOffsetPosition);
+                /* parse the range */
+                CRange<Real> cRange;
+                GetNodeAttribute(*itCamera, "range", cRange);
+                /* create the projection matrix */
+                CSquareMatrix<3> cProjectionMatrix;
+                cProjectionMatrix.SetIdentityMatrix();
+                /* set the focal length */
+                CVector2 cFocalLength;
+                GetNodeAttribute(*itCamera, "focal_length", cFocalLength);
+                cProjectionMatrix(0,0) = cFocalLength.GetX(); // Fx
+                cProjectionMatrix(1,1) = cFocalLength.GetY(); // Fy
+                /* set the principal point */
+                CVector2 cPrincipalPoint;
+                GetNodeAttribute(*itCamera, "principal_point", cPrincipalPoint);
+                cProjectionMatrix(0,2) = cPrincipalPoint.GetX(); // Px
+                cProjectionMatrix(1,2) = cPrincipalPoint.GetY(); // Py
+                /* set the distortion parameters */
+                /*
+                CMatrix<1,5> cDistortionParameters;
+                std::string strDistortionParameters;
+                Real pfDistortionParameters[3];
+                GetNodeAttribute(*itCamera, "distortion_parameters", strDistortionParameters);
+                ParseValues<Real>(strDistortionParameters, 3, pfDistortionParameters, ',');
+                cDistortionParameters(0,0) = pfDistortionParameters[0]; // K1
+                cDistortionParameters(0,1) = pfDistortionParameters[1]; // K2
+                cDistortionParameters(0,4) = pfDistortionParameters[2]; // K3
+                */
+                /* parse the resolution */
+                CVector2 cResolution;
+                GetNodeAttribute(*itCamera, "resolution", cResolution);
+                /* create and initialise the algorithms */
+                std::vector<CCameraSensorSimulatedAlgorithm*> vecSimulatedAlgorithms;
+                std::vector<CCI_CameraSensorAlgorithm*> vecAlgorithms;
+                TConfigurationNodeIterator itAlgorithm;
+                for(itAlgorithm = itAlgorithm.begin(&(*itCamera));
+                    itAlgorithm != itAlgorithm.end();
+                    ++itAlgorithm) {
+                    /* create the algorithm */
+                    CCameraSensorSimulatedAlgorithm* pcAlgorithm =
+                            CFactory<CCameraSensorSimulatedAlgorithm>::New(itAlgorithm->Value());
+                    /* check that algorithm inherits from a control interface */
+                    auto* pcCIAlgorithm =
+                            dynamic_cast<CCI_CameraSensorAlgorithm*>(pcAlgorithm);
+                    if(pcCIAlgorithm == nullptr) {
+                        THROW_ARGOSEXCEPTION("Algorithm \"" << itAlgorithm->Value() <<
+                                                            "\" does not inherit from CCI_CameraSensorAlgorithm");
+                    }
+                    /* initialize the algorithm's control interface */
+                    pcCIAlgorithm->Init(*itAlgorithm);
+                    /* store pointers to the algorithms */
+                    vecSimulatedAlgorithms.push_back(pcAlgorithm);
+                    vecAlgorithms.push_back(pcCIAlgorithm);
+                }
+                /* create the simulated sensor */
+                m_vecSensors.emplace_back(sAnchor, cOffset, cRange, cProjectionMatrix,
+                                          cResolution, vecSimulatedAlgorithms);
+//                /* create the sensor's control interface */ // This is for LUA only
+//                m_vecInterfaces.emplace_back(strId, vecAlgorithms);
+            }
         }
         catch(CARGoSException& ex) {
-            THROW_ARGOSEXCEPTION_NESTED("Error initializing the colored blob perspective camera default sensor", ex);
+            THROW_ARGOSEXCEPTION_NESTED("Error initializing camera sensor", ex);
         }
         /* sensor is disabled by default */
         Disable();
@@ -205,108 +124,162 @@ namespace argos {
         if (IsDisabled()) {
             return;
         }
-        /* Increase data counter */
-        ++m_sReadings.Counter;
-        /* Prepare the operation */
-        m_pcOperation->Setup();
-        /* Calculate the sensing box */
-        Real fHalfRange  = m_pcCamEntity->GetRange() * 0.5f;
-        Real fHalfSide   = fHalfRange * Tan(m_pcCamEntity->GetAperture());
-        /* Box center */
-        CVector3 cCenter(fHalfRange, 0.0f, 0.0f);
-        cCenter.Rotate(m_pcCamEntity->GetAnchor().Orientation);
-        cCenter += m_pcCamEntity->GetAnchor().Position;
-        /* Box half size */
-        CVector3 cCorner(fHalfRange, fHalfSide, fHalfSide);
-        cCorner.Rotate(m_pcCamEntity->GetAnchor().Orientation);
-        CVector3 cHalfSize(
-                Abs(cCorner.GetX()),
-                Abs(cCorner.GetY()),
-                Abs(cCorner.GetZ()));
-        /* Go through LED entities in box range */
-        m_pcLEDIndex->ForEntitiesInBoxRange(
-                cCenter, cHalfSize, *m_pcOperation);
+        /* vector of controller rays */
+        std::vector<std::pair<bool, CRay3> >& vecCheckedRays =
+                m_pcControllableEntity->GetCheckedRays();
+        /* sensor parameters */
+        CTransformationMatrix3 cWorldToAnchorTransform;
+        CTransformationMatrix3 cWorldToCameraTransform;
+        CTransformationMatrix3 cCameraToWorldTransform;
+        CVector3 cCameraLocation, cLookAt, cUp;
+        CVector3 cX, cY, cZ;
+        CVector3 cNearCenter, cNearTopLeft, cNearTopRight, cNearBottomLeft, cNearBottomRight;
+        CVector3 cFarCenter, cFarTopLeft, cFarTopRight, cFarBottomLeft, cFarBottomRight;
+        std::array<CPlane, 6> arrFrustumPlanes;
+        CVector3 cBoundingBoxMinCorner, cBoundingBoxMaxCorner;
+        CVector3 cBoundingBoxPosition, cBoundingBoxHalfExtents;
+        /* for each camera sensor */
+        for(SSensor& s_sensor : m_vecSensors) {
+            /* calculate transform matrices */
+            cWorldToAnchorTransform.SetFromComponents(s_sensor.Anchor.Orientation, s_sensor.Anchor.Position);
+            cWorldToCameraTransform = cWorldToAnchorTransform * s_sensor.Offset;
+            cCameraToWorldTransform = cWorldToCameraTransform.GetInverse();
+            /* calculate camera direction vectors */
+            cCameraLocation = cWorldToCameraTransform.GetTranslationVector();
+            cLookAt = cWorldToCameraTransform * CVector3::Z;
+            cUp = CVector3(0,-1,0); // -Y
+            cUp.Rotate(cWorldToCameraTransform.GetRotationMatrix());
+            /* calculate direction vectors */
+            cZ = cCameraLocation - cLookAt;
+            cZ.Normalize();
+            cX = cUp;
+            cX.CrossProduct(cZ);
+            cX.Normalize();
+            cY = cZ;
+            cY.CrossProduct(cX);
+            /* calculate frustum coordinates */
+            cNearCenter = cCameraLocation - cZ * s_sensor.Range.GetMin();
+            cFarCenter = cCameraLocation - cZ * s_sensor.Range.GetMax();
+            cNearTopLeft = cNearCenter + (cY * s_sensor.NearPlaneHeight) - (cX * s_sensor.NearPlaneWidth);
+            cNearTopRight = cNearCenter + (cY * s_sensor.NearPlaneHeight) + (cX * s_sensor.NearPlaneWidth);
+            cNearBottomLeft = cNearCenter - (cY * s_sensor.NearPlaneHeight) - (cX * s_sensor.NearPlaneWidth);
+            cNearBottomRight = cNearCenter - (cY * s_sensor.NearPlaneHeight) + (cX * s_sensor.NearPlaneWidth);
+            cFarTopLeft = cFarCenter + (cY * s_sensor.FarPlaneHeight) - (cX * s_sensor.FarPlaneWidth);
+            cFarTopRight = cFarCenter + (cY * s_sensor.FarPlaneHeight) + (cX * s_sensor.FarPlaneWidth);
+            cFarBottomLeft = cFarCenter - (cY * s_sensor.FarPlaneHeight) - (cX * s_sensor.FarPlaneWidth);
+            cFarBottomRight = cFarCenter - (cY * s_sensor.FarPlaneHeight) + (cX * s_sensor.FarPlaneWidth);
+            /* show frustum if enabled by adding outline to the checked rays vector */
+            if(m_bShowFrustum) {
+                vecCheckedRays.emplace_back(false, CRay3(cNearTopLeft, cNearTopRight));
+                vecCheckedRays.emplace_back(false, CRay3(cNearTopRight, cNearBottomRight));
+                vecCheckedRays.emplace_back(false, CRay3(cNearBottomRight, cNearBottomLeft));
+                vecCheckedRays.emplace_back(false, CRay3(cNearBottomLeft, cNearTopLeft));
+                vecCheckedRays.emplace_back(false, CRay3(cFarTopLeft, cFarTopRight));
+                vecCheckedRays.emplace_back(false, CRay3(cFarTopRight, cFarBottomRight));
+                vecCheckedRays.emplace_back(false, CRay3(cFarBottomRight, cFarBottomLeft));
+                vecCheckedRays.emplace_back(false, CRay3(cFarBottomLeft, cFarTopLeft));
+                vecCheckedRays.emplace_back(false, CRay3(cNearTopLeft, cFarTopLeft));
+                vecCheckedRays.emplace_back(false, CRay3(cNearTopRight, cFarTopRight));
+                vecCheckedRays.emplace_back(false, CRay3(cNearBottomRight, cFarBottomRight));
+                vecCheckedRays.emplace_back(false, CRay3(cNearBottomLeft, cFarBottomLeft));
+            }
+            //std::cerr << cFarBottomRight.GetZ() << "\t" << cFarBottomLeft.GetZ() << std::endl; TODO
+            /* generate a bounding box for the frustum */
+            cBoundingBoxMinCorner = cNearCenter;
+            cBoundingBoxMaxCorner = cNearCenter;
+            for(const CVector3& c_point : {
+                    cNearTopLeft, cNearTopRight, cNearBottomLeft, cNearBottomRight,
+                    cFarTopLeft, cFarTopRight, cFarBottomLeft, cFarBottomRight
+            }) {
+                if(c_point.GetX() > cBoundingBoxMaxCorner.GetX()) {
+                    cBoundingBoxMaxCorner.SetX(c_point.GetX());
+                }
+                if(c_point.GetX() < cBoundingBoxMinCorner.GetX()) {
+                    cBoundingBoxMinCorner.SetX(c_point.GetX());
+                }
+                if(c_point.GetY() > cBoundingBoxMaxCorner.GetY()) {
+                    cBoundingBoxMaxCorner.SetY(c_point.GetY());
+                }
+                if(c_point.GetY() < cBoundingBoxMinCorner.GetY()) {
+                    cBoundingBoxMinCorner.SetY(c_point.GetY());
+                }
+                if(c_point.GetZ() > cBoundingBoxMaxCorner.GetZ()) {
+                    cBoundingBoxMaxCorner.SetZ(c_point.GetZ());
+                }
+                if(c_point.GetZ() < cBoundingBoxMinCorner.GetZ()) {
+                    cBoundingBoxMinCorner.SetZ(c_point.GetZ());
+                }
+            }
+            cBoundingBoxMaxCorner *= 0.5;
+            cBoundingBoxMinCorner *= 0.5;
+            cBoundingBoxPosition = (cBoundingBoxMaxCorner + cBoundingBoxMinCorner);
+            cBoundingBoxHalfExtents = (cBoundingBoxMaxCorner - cBoundingBoxMinCorner);
+            /* generate frustum planes */
+            arrFrustumPlanes[0].SetFromThreePoints(cNearTopRight, cNearTopLeft, cFarTopLeft);
+            arrFrustumPlanes[1].SetFromThreePoints(cNearBottomLeft, cNearBottomRight, cFarBottomRight);
+            arrFrustumPlanes[2].SetFromThreePoints(cNearTopLeft, cNearBottomLeft, cFarBottomLeft);
+            arrFrustumPlanes[3].SetFromThreePoints(cNearBottomRight, cNearTopRight, cFarBottomRight);
+            arrFrustumPlanes[4].SetFromThreePoints(cNearTopLeft, cNearTopRight, cNearBottomRight);
+            arrFrustumPlanes[5].SetFromThreePoints(cFarTopRight, cFarTopLeft, cFarBottomLeft);
+            /* execute each algorithm */
+            for(CCameraSensorSimulatedAlgorithm* pc_algorithm : s_sensor.Algorithms) {
+                pc_algorithm->Update(s_sensor.ProjectionMatrix,
+                                     arrFrustumPlanes,
+                                     cCameraToWorldTransform,
+                                     cCameraLocation,
+                                     cBoundingBoxPosition,
+                                     cBoundingBoxHalfExtents);
+                /* transfer any rays to the controllable entity for rendering */
+                vecCheckedRays.insert(std::end(vecCheckedRays),
+                                      std::begin(pc_algorithm->GetCheckedRays()),
+                                      std::end(pc_algorithm->GetCheckedRays()));
+            }
+        }
     }
-
-    /****************************************/
-    /****************************************/
-
-    void CDeepracerCameraDefaultSensor::Reset() {
-        m_sReadings.Counter = 0;
-        m_sReadings.BlobList.clear();
-    }
-
-    /****************************************/
-    /****************************************/
-
-    void CDeepracerCameraDefaultSensor::Destroy() {
-        delete m_pcOperation;
-    }
-
-    /****************************************/
-    /****************************************/
-
-    void CDeepracerCameraDefaultSensor::Enable() {
-        m_pcCamEntity->Enable();
-        CCI_Sensor::Enable();
-
-    }
-
-    /****************************************/
-    /****************************************/
-
-    void CDeepracerCameraDefaultSensor::Disable() {
-        m_pcCamEntity->Disable();
-        CCI_Sensor::Disable();
-
+    const unsigned char* CDeepracerCameraDefaultSensor::GetPixels() const {
+        return 0;
     }
 
     /****************************************/
     /****************************************/
 
     REGISTER_SENSOR(CDeepracerCameraDefaultSensor,
-    "deepracer_perspective_camera", "default",
-    "Carlo Pinciroli [ilpincy@gmail.com]",
+    "deepracer_camera", "default",
+    "Carlo Pinciroli [ilpincy@gmail.com], Khai Yi Chin [khaiyichin@gmail.com]",
     "1.0",
-
     "A AWS Deepracer camera sensor.",
-    "This sensor accesses an perspective camera that detects colored blobs. The\n"
-    "sensor returns a list of blobs, each defined by a color and a position with\n"
-    "respect to the robot reference point on the ground. In controllers, you must\n"
-    "include the ci_colored_blob_perspective_camera_sensor.h header.\n\n"
+    "The generic multi-camera sensor can be attached to any composable entity in\n"
+    "ARGoS that contains an embodied entity with at least one anchor. The sensor\n"
+    "can be initialized with a number of cameras each running different algorithms\n"
+    "for detecting different objects in the simulation. The sensor is designed so\n"
+    "that algorithms can project a feature in the simulation on to the virtual\n"
+    "sensor and store its 2D pixel coordinates as a reading. The implementation\n"
+    "of algorithms that behave differently, however, is also possible.\n\n"
 
     "This sensor is disabled by default, and must be enabled before it can be\n"
     "used.\n\n"
 
     "REQUIRED XML CONFIGURATION\n\n"
-
     "  <controllers>\n"
     "    ...\n"
     "    <my_controller ...>\n"
     "      ...\n"
     "      <sensors>\n"
     "        ...\n"
-    "        <deepracer_perspective_camera implementation=\"default\"\n"
-    "                                         medium=\"leds\" />\n"
+    "        <cameras implementation=\"default\"/>\n"
     "        ...\n"
     "      </sensors>\n"
     "      ...\n"
     "    </my_controller>\n"
     "    ...\n"
     "  </controllers>\n\n"
-
-    "The 'medium' attribute must be set to the id of the leds medium declared in the\n"
-    "<media> section.\n\n"
 
     "OPTIONAL XML CONFIGURATION\n\n"
 
-    "It is possible to draw the rays shot by the camera sensor in the OpenGL\n"
+    "It is possible to draw the frustum of each camera sensor in the OpenGL\n"
     "visualization. This can be useful for sensor debugging but also to understand\n"
-    "what's wrong in your controller. In OpenGL, the rays are drawn in cyan when\n"
-    "they are not obstructed and in purple when they are. In case a ray is\n"
-    "obstructed, a black dot is drawn where the intersection occurred.\n"
-    "To turn this functionality on, add the attribute \"show_rays\" as in this\n"
-    "example:\n\n"
+    "what's wrong in your controller. To turn this functionality on, add the\n"
+    "attribute \"show_frustum\" as follows:\n\n"
 
     "  <controllers>\n"
     "    ...\n"
@@ -314,9 +287,7 @@ namespace argos {
     "      ...\n"
     "      <sensors>\n"
     "        ...\n"
-    "        <deepracer_perspective_camera implementation=\"default\"\n"
-    "                                         medium=\"leds\" />\n"
-    "                                         show_rays=\"true\" />\n"
+    "        <cameras implementation=\"default\" show_frustum=\"true\"/>\n"
     "        ...\n"
     "      </sensors>\n"
     "      ...\n"
@@ -324,9 +295,11 @@ namespace argos {
     "    ...\n"
     "  </controllers>\n\n"
 
-    "It is possible to add uniform noise to the blobs, thus matching the\n"
-    "characteristics of a real robot better. This can be done with the attribute\n"
-    "\"noise_std_dev\".\n\n"
+    "To add a camera to the plugin, create a camera node as shown in the following\n"
+    "example. A camera is defined by its range (how close and how far the camera\n"
+    "can see), its anchor and its position and orientation offsets from that\n"
+    "that anchor, its focal length and principal point (which define the\n"
+    "projection matrix), and its resolution.\n\n"
 
     "  <controllers>\n"
     "    ...\n"
@@ -334,9 +307,41 @@ namespace argos {
     "      ...\n"
     "      <sensors>\n"
     "        ...\n"
-    "        <deepracer_perspective_camera implementation=\"default\"\n"
-    "                                         medium=\"leds\" />\n"
-    "                                         noise_std_dev=\"0.1\" />\n"
+    "        <cameras implementation=\"default\" show_frustum=\"true\">\n"
+    "          <camera id=\"camera0\" range=\"0.025:0.25\" anchor=\"origin\"\n"
+    "                  position=\"0.1,0,0.1\" orientation=\"90,-90,0\"\n"
+    "                  focal_length=\"800,800\" principal_point=\"320,240\"\n"
+    "                  resolution=\"640,480\"/>\n"
+    "        </cameras>\n"
+    "        ...\n"
+    "      </sensors>\n"
+    "      ...\n"
+    "    </my_controller>\n"
+    "    ...\n"
+    "  </controllers>\n\n"
+
+    "To run an algorithm on the camera sensor, simply add the algorithm as a node\n"
+    "under the camera node. At the time of writing, three algorithms are available\n"
+    "by default: led_detector, directional_led_detector, and tag_detector. Each of\n"
+    "algorithms requires a medium attribute that specifies the medium where the\n"
+    "target entities are indexed. By setting the show_rays attribute to true, you\n"
+    "can see whether or not a target was partially occluded by another object in\n"
+    "the simulation. For example:\n\n"
+
+    "  <controllers>\n"
+    "    ...\n"
+    "    <my_controller ...>\n"
+    "      ...\n"
+    "      <sensors>\n"
+    "        ...\n"
+    "        <cameras implementation=\"default\" show_frustum=\"true\">\n"
+    "          <camera id=\"camera0\" range=\"0.025:0.25\" anchor=\"origin\"\n"
+    "                  position=\"0.1,0,0.1\" orientation=\"90,-90,0\"\n"
+    "                  focal_length=\"800,800\" principal_point=\"320,240\"\n"
+    "                  resolution=\"640,480\">\n"
+    "             <led_detector medium=\"leds\" show_rays=\"true\"/>\n"
+    "          </camera>\n"
+    "        </cameras>\n"
     "        ...\n"
     "      </sensors>\n"
     "      ...\n"
@@ -344,7 +349,5 @@ namespace argos {
     "    ...\n"
     "  </controllers>\n",
 
-    "Usable"
-    );
-
+    "Usable");
 }
