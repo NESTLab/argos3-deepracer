@@ -1,5 +1,7 @@
 if(ARGOS_BUILD_FOR_SIMULATOR)
   add_library(deepracer_diffusion MODULE deepracer_diffusion.h deepracer_diffusion.cpp)
+  add_library(deepracer_camera MODULE deepracer_camera.h deepracer_camera.cpp)
+
 endif(ARGOS_BUILD_FOR_SIMULATOR)
 if(ARGOS_BUILD_FOR STREQUAL "dprcr")
   add_executable(deepracer_diffusion deepracer_diffusion.h deepracer_diffusion.cpp ${CMAKE_SOURCE_DIR}/plugins/robots/turtlebot3/real_robot/main.cpp)

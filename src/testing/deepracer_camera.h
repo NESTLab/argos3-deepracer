@@ -1,5 +1,5 @@
-#ifndef DEEPRACER_DIFFUSION_H
-#define DEEPRACER_DIFFUSION_H
+#ifndef DEEPRACER_TESTCAMERA_H
+#define DEEPRACER_TESTCAMERA_H
 
 /*
  * Include some necessary headers.
@@ -9,6 +9,8 @@
 #include <argos3/plugins/robots/deepracer/control_interface/ci_ackermann_steering_actuator.h>
 #include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_imu_sensor.h>
 #include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_lidar_sensor.h>
+#include <argos3/plugins/robots/deepracer/control_interface/ci_deepracer_camera_sensor.h>
+
 
 /*
  * All the ARGoS stuff in the 'argos' namespace.
@@ -19,19 +21,19 @@ using namespace argos;
 /*
  * A controller is simply an implementation of the CCI_Controller class.
  */
-class CDeepracerDiffusion : public CCI_Controller {
+class CDeepracerTestCamera : public CCI_Controller {
 public:
 
     /* Class constructor. */
-    CDeepracerDiffusion();
+    CDeepracerTestCamera();
 
     /* Class destructor. */
-    virtual ~CDeepracerDiffusion() {}
+    virtual ~CDeepracerTestCamera() {}
 
     /*
      * This function initializes the controller.
      * The 't_node' variable points to the <parameters> section in the XML
-     * file in the <controllers><deepracer_diffusion_controller> section.
+     * file in the <controllers><footbot_diffusion_controller> section.
      */
     virtual void Init(TConfigurationNode& t_node);
 
@@ -67,12 +69,13 @@ private:
     CCI_DeepracerLIDARSensor* m_pcLIDAR;
     /* Pointer to the AWS DeepRacer IMU sensor */
     CCI_DeepracerIMUSensor* m_pcIMU;
-
+    /* Pointer to the AWS DeepRacer Camera sensor */
+    CCI_DeepracerCameraSensor* m_pcCamera;
     /*
      * The following variables are used as parameters for the
      * algorithm. You can set their value in the <parameters> section
      * of the XML configuration file, under the
-     * <controllers><footbot_diffusion_controller> section.
+     * <controllers><deepracer_diffusion_controller> section.
      */
 
     /* Maximum tolerance for the angle between

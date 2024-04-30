@@ -8,11 +8,12 @@ namespace argos {
     class CRABEquippedEntity;
     class CProximitySensorEquippedEntity;
     class CBatteryEquippedEntity;
+    class CPerspectiveCameraEquippedEntity;
 }
 
 #include <argos3/core/simulator/entity/composable_entity.h>
 
-#include "ackermann_wheeled_entity.h" // TODO: fix path when the CAckermannWheeledEntity class gets integrated to the main ARGoS3 code
+#include <argos3/plugins/robots/deepracer/simulator/ackermann_wheeled_entity.h> // TODO: fix path when the CAckermannWheeledEntity class gets integrated to the main ARGoS3 code
 
 namespace argos {
 
@@ -59,6 +60,10 @@ namespace argos {
             return *m_pcAckermannWheeledEntity;
         }
 
+        inline CPerspectiveCameraEquippedEntity& GetCameraEntity(){
+            return *m_pcCameraEntity;
+        }
+
         virtual std::string GetTypeDescription() const {
             return "deepracer";
         }
@@ -71,6 +76,7 @@ namespace argos {
         CRABEquippedEntity*             m_pcRABEquippedEntity;
         CAckermannWheeledEntity*        m_pcAckermannWheeledEntity;
         CBatteryEquippedEntity*         m_pcBatteryEquippedEntity;
+        CPerspectiveCameraEquippedEntity* m_pcCameraEntity;
     };
 }
 

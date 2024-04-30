@@ -42,8 +42,8 @@ void CRealDeepracer::Destroy() {
     }
 
 CCI_Sensor* CRealDeepracer::MakeSensor(const std::string& str_name) {
-//    MAKE_SENSOR(CRealDeepracerCameraSensor,
-//                "camera");
+    MAKE_SENSOR(CRealDeepracerCameraSensor,
+                "camera");
     MAKE_SENSOR(CRealDeepracerIMUSensor,
                 "imu");
     MAKE_SENSOR(CRealDeepracerLIDARSensor,
