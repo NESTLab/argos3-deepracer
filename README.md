@@ -8,11 +8,19 @@ This code allows you to simulate the Deepracer AWS in ARGoS3, and to run ARGoS3 
 
 ## To Simulate The Deepracer AWS in ARGoS3 ##
 
-    $ mkdir build_sim
-    $ cd build_sim
+    $ mkdir build
+    $ cd build
     $ cmake -DCMAKE_BUILD_TYPE=Release ../src
-    $ make -j8
-    
+    $ make install
+    $ cd ..
+    $ argos3 -c path/yourfile.argos
+
+You can view the diffusion example in src/testing to see how to write a simple controller.
+### Notes about the simulation ###
+Currently, camera sensor is not supported in simulation because we want to avoid raw pixels in ARGoS.
+If you want to use the camera with specific scenarios to detect something, you can checkout the default camera sensor and its algorithm [here](https://github.com/ilpincy/argos3/tree/master/src/plugins/robots/generic/simulator).
+The only available algorithms for simulation camera are LED and tag detection.
+
 ## To Run ARGoS3 Code on the Deepracer AWS ##
 
 First, you need to install the [light toolchain provided by K-Team](http://ftp.k-team.com/KheperaIV/software/Gumstix%20COM%20Y/light_tools/poky-glibc-i686-khepera4-image-cortexa8hf-vfp-neon-toolchain-1.8.sh).
