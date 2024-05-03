@@ -2,7 +2,7 @@
 #define CCI_DEEPRACER_CAMERA_SENSOR_H
 
 namespace argos {
-    class CCI_DeepracerCameraSensor;
+    class CCI_RealDeepracerCameraSensor;
 }
 
 #include <argos3/core/control_interface/ci_sensor.h>
@@ -13,7 +13,7 @@ namespace argos {
 
 namespace argos {
 
-    class CCI_DeepracerCameraSensor : public CCI_Sensor {
+    class CCI_RealDeepracerCameraSensor : public CCI_Sensor {
     public:
 
         struct SBlob {
@@ -32,8 +32,8 @@ namespace argos {
 
     public:
 
-        CCI_DeepracerCameraSensor();
-        virtual ~CCI_DeepracerCameraSensor() {}
+        CCI_RealDeepracerCameraSensor();
+        virtual ~CCI_RealDeepracerCameraSensor() {}
 
         UInt32 GetWidth() const;
 
@@ -56,8 +56,8 @@ namespace argos {
         TBlobs m_tBlobs;
     };
 
-    std::ostream& operator<<(std::ostream& c_os, const CCI_DeepracerCameraSensor::SBlob& s_blob);
-    std::ostream& operator<<(std::ostream& c_os, const CCI_DeepracerCameraSensor::TBlobs& t_blobs);
+    std::ostream& operator<<(std::ostream& c_os, const CCI_RealDeepracerCameraSensor::SBlob& s_blob);
+    std::ostream& operator<<(std::ostream& c_os, const CCI_RealDeepracerCameraSensor::TBlobs& t_blobs);
 
 }
 

@@ -3,7 +3,7 @@
 #
 # argos3/plugins/robots/deepracer/control_interface
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_DEEPRACER_CONTROLINTERFACE
-  control_interface/ci_deepracer_camera_sensor.h
+        control_interface/ci_real_deepracer_camera_sensor.h
   control_interface/ci_deepracer_imu_sensor.h
   control_interface/ci_ackermann_steering_actuator.h
   control_interface/ci_deepracer_lidar_sensor.h)
@@ -23,7 +23,6 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     simulator/ackermann_steering_default_actuator.h
     simulator/deepracer_imu_default_sensor.h
     simulator/deepracer_lidar_default_sensor.h
-    simulator/deepracer_camera_default_sensor.h
   )
 endif(ARGOS_BUILD_FOR_SIMULATOR)
 
@@ -43,7 +42,7 @@ endif(ARGOS_BUILD_FOR STREQUAL "dprcr")
 #
 set(ARGOS3_SOURCES_PLUGINS_ROBOTS_DEEPRACER
   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_DEEPRACER_CONTROLINTERFACE}
-  control_interface/ci_deepracer_camera_sensor.cpp
+        control_interface/ci_real_deepracer_camera_sensor.cpp
   control_interface/ci_deepracer_imu_sensor.cpp
   control_interface/ci_ackermann_steering_actuator.cpp
   control_interface/ci_deepracer_lidar_sensor.cpp)
@@ -64,7 +63,6 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     simulator/ackermann_steering_default_actuator.cpp
     simulator/deepracer_imu_default_sensor.cpp
     simulator/deepracer_lidar_default_sensor.cpp
-    simulator/deepracer_camera_default_sensor.cpp
   )
   # Compile the graphical visualization only if the necessary libraries have been found
   if(ARGOS_QTOPENGL_FOUND)
