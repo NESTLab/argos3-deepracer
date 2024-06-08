@@ -17,13 +17,13 @@ class CRealDeepracer; // forward declare CRealDeepracer
 class CRealDeepracerDevice {
 public:
 
-    CRealDeepracerDevice(const std::shared_ptr<CRealDeepracer>& pt_node_handle) : m_ptNodeHandle(pt_node_handle) {}
+    CRealDeepracerDevice(const std::shared_ptr<rclcpp::Node>& pt_node_handle) : m_ptNodeHandle(pt_node_handle) {}
     virtual ~CRealDeepracerDevice() {}
-    virtual void Do(Real f_elapsed_time) = 0;
+    virtual void Do(Real f_elapsed_time) {}
 
 protected:
 
-    std::shared_ptr<CRealDeepracer> m_ptNodeHandle;
+    std::shared_ptr<rclcpp::Node> m_ptNodeHandle;
 };
 
 #endif // REAL_DEEPRACER_DEVICE_H

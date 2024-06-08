@@ -14,15 +14,6 @@ CRealDeepracer::CRealDeepracer() : rclcpp::Node("deepracer_node") {
 /****************************************/
 /****************************************/
 
-void CRealDeepracer::InitRobot(std::string str_argos_fname, std::string str_controller_id) {
-    //Update the name and id
-    this->strARGoSFName = str_argos_fname;
-    this->strControllerId = str_controller_id;
-}
-
-/****************************************/
-/****************************************/
-
 void CRealDeepracer::Destroy() {
     //Reset/clear maps if using gmapping in the future
 }
@@ -34,7 +25,7 @@ void CRealDeepracer::Destroy() {
     if (str_name == TAG) {                                                               \
         CLASSNAME *pcSens =                                                              \
             new CLASSNAME(                                                               \
-                this->std::enable_shared_from_this<CRealDeepracer>::shared_from_this()   \
+                GetNodeHandlePtr()                                                       \
             );                                                                           \
         m_vecSensors.push_back(pcSens);                                                  \
         LOG << "[INFO] Initialized \"" << TAG << "\" sensor " << std::endl;              \
@@ -45,9 +36,9 @@ CCI_Sensor* CRealDeepracer::MakeSensor(const std::string& str_name) {
 //    MAKE_SENSOR(CRealDeepracerCameraSensor,
 //                "camera");
     MAKE_SENSOR(CRealDeepracerIMUSensor,
-                "imu");
+                "deepracer_imu");
     MAKE_SENSOR(CRealDeepracerLIDARSensor,
-                "lidar");
+                "deepracer_lidar");
     return NULL;
 }
 
@@ -58,7 +49,7 @@ CCI_Sensor* CRealDeepracer::MakeSensor(const std::string& str_name) {
     if (str_name == TAG) {                                                               \
         CLASSNAME *pcAct =                                                               \
             new CLASSNAME(                                                               \
-                this->std::enable_shared_from_this<CRealDeepracer>::shared_from_this()   \
+                GetNodeHandlePtr()                                                       \
             );                                                                           \
         m_vecActuators.push_back(pcAct);                                                 \
         LOG << "[INFO] Initialized \"" << TAG << "\" actuator " << std::endl;            \
@@ -75,16 +66,20 @@ CCI_Actuator* CRealDeepracer::MakeActuator(const std::string& str_name) {
 /****************************************/
 
 void CRealDeepracer::Sense(Real f_elapsed_time) {
-    for(size_t i = 0; i < m_vecSensors.size(); ++i) {
-        m_vecSensors[i]->Do(f_elapsed_time);
-    }
+    /* Tell ROS to collect messages */
+    rclcpp::spin_some(GetNodeHandlePtr())
 }
 
 /****************************************/
 /****************************************/
 
 void CRealDeepracer::Act(Real f_elapsed_time) {
+
+    // Go through actuators and let them do their thing
     for(size_t i = 0; i < m_vecActuators.size(); ++i) {
         m_vecActuators[i]->Do(f_elapsed_time);
     }
+
+    // Tell ROS Tto publish the messages
+    rclcpp::spin_some(GetNodeHandlePtr());
 }
