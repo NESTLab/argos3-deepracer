@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<argos-configuration>
+
+  <!-- ************************* -->
+  <!-- * General configuration * -->
+  <!-- ************************* -->
+  <framework>
+    <experiment ticks_per_second="10"/>
+  </framework>
+
+  <!-- *************** -->
+  <!-- * Controllers * -->
+  <!-- *************** -->
+  <controllers>
+
+    <deepracer_hello_world_controller id="drhw"
+                               library="build/testing/libdeepracer_hello_world">
+      <actuators />
+      <sensors>
+        <deepracer_imu implementation="default" />
+        <!-- <deepracer_lidar implementation="default" num_readings="100" show_rays="true" /> -->
+      </sensors>
+      <params />
+    </deepracer_hello_world_controller>
+
+  </controllers>
+
+</argos-configuration>
