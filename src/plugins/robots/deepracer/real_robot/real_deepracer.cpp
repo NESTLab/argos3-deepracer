@@ -67,7 +67,7 @@ CCI_Actuator* CRealDeepracer::MakeActuator(const std::string& str_name) {
 
 void CRealDeepracer::Sense(Real f_elapsed_time) {
     /* Tell ROS to collect messages */
-    rclcpp::spin_some(GetNodeHandlePtr())
+    rclcpp::spin_some(GetNodeHandlePtr());
 }
 
 /****************************************/

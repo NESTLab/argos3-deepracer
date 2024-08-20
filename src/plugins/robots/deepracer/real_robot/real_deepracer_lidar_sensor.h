@@ -16,7 +16,7 @@ class CRealDeepracerLIDARSensor : public CCI_DeepracerLIDARSensor,
                                   public CRealDeepracerDevice {
 public:
 
-    CRealDeepracerLIDARSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle);
+    CRealDeepracerLIDARSensor(const std::shared_ptr<rclcpp::Node>& pt_node_handle);
 
     virtual ~CRealDeepracerLIDARSensor();
 
