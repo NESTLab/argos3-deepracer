@@ -13,7 +13,7 @@ class CRealDeepracerCameraSensor :
 
 public:
 
-    CRealDeepracerCameraSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle);
+    CRealDeepracerCameraSensor(const std::shared_ptr<rclcpp::Node>& pt_node_handle);
 
     virtual ~CRealDeepracerCameraSensor();
 

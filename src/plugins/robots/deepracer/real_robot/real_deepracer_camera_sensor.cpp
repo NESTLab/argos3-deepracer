@@ -176,7 +176,7 @@ static void* CameraThread(void* pvoid_params) {
 /****************************************/
 /****************************************/
 
-CRealDeepracerCameraSensor::CRealDeepracerCameraSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle)
+CRealDeepracerCameraSensor::CRealDeepracerCameraSensor(const std::shared_ptr<rclcpp::Node>& pt_node_handle)
         :CRealDeepracerDevice(*pt_node_handle),
         m_bNewBlobReadings(false) {
 

@@ -18,7 +18,7 @@
       <actuators />
       <sensors>
         <deepracer_imu implementation="default" />
-        <!-- <deepracer_lidar implementation="default" num_readings="100" show_rays="true" /> -->
+        <deepracer_lidar implementation="default" />
       </sensors>
       <params />
     </deepracer_hello_world_controller>

@@ -39,7 +39,7 @@ void CDeepracerHelloWorld::Init(TConfigurationNode& t_node) {
      * list a device in the XML and then you request it here, an error
      * occurs.
      */
-    // m_pcLIDAR = GetSensor<CCI_DeepracerLIDARSensor>("deepracer_lidar");
+    m_pcLIDAR = GetSensor<CCI_DeepracerLIDARSensor>("deepracer_lidar");
     m_pcIMU = GetSensor<CCI_DeepracerIMUSensor>("deepracer_imu");
 }
 
@@ -47,21 +47,32 @@ void CDeepracerHelloWorld::Init(TConfigurationNode& t_node) {
 /****************************************/
 
 void CDeepracerHelloWorld::ControlStep() {
-    // Print IMU readings
-    auto sReading = m_pcIMU->GetReading();
 
-    LOG << "IMU Angular Velocity (x, y, z) = (" << sReading.AngVelocity.GetX()
-        << ", " << sReading.AngVelocity.GetY()
-        << ", " << sReading.AngVelocity.GetZ()
-        << ")" << std::endl;
+    if (++m_unCounter % 10 == 0) {
+        // Print IMU readings
+        auto sReading = m_pcIMU->GetReading();
 
-    LOG << "IMU Linear Acceleration (x, y, z) = (" << sReading.LinAcceleration.GetX()
-        << ", " << sReading.LinAcceleration.GetY()
-        << ", " << sReading.LinAcceleration.GetZ()
-        << ")" << std::endl;
+        LOG << "IMU Angular Velocity (x, y, z) = (" << sReading.AngVelocity.GetX()
+            << ", " << sReading.AngVelocity.GetY()
+            << ", " << sReading.AngVelocity.GetZ()
+            << ")" << std::endl;
 
-    LOG << std::endl;
-    LOG.Flush(); // temporary fix to ensure log outputs get out
+        LOG << "IMU Linear Acceleration (x, y, z) = (" << sReading.LinAcceleration.GetX()
+            << ", " << sReading.LinAcceleration.GetY()
+            << ", " << sReading.LinAcceleration.GetZ()
+            << ")" << std::endl;
+
+        // Print LIDAR messages
+        LOG << "LIDAR ranges (" << "points) = [" << std::endl;
+        for (size_t i = 0; i < m_pcLIDAR->GetNumReadings(); ++i) {
+            LOG << m_pcLIDAR->GetReading(i) << " ";
+        }
+        LOG << std::endl << "]" << std::endl << std::endl;
+
+        LOG.Flush(); // temporary fix to ensure log outputs get out
+
+        m_unCounter = 0; // reset counter
+    }
 }
 
 /****************************************/

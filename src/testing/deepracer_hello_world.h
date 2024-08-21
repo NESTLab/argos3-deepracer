@@ -31,7 +31,7 @@ public:
     /*
      * This function initializes the controller.
      * The 't_node' variable points to the <parameters> section in the XML
-     * file in the <controllers><footbot_diffusion_controller> section.
+     * file in the <controllers><deepracer_hello_world_controller> section.
      */
     virtual void Init(TConfigurationNode& t_node);
 
@@ -65,6 +65,8 @@ private:
     CCI_DeepracerLIDARSensor* m_pcLIDAR;
     /* Pointer to the AWS DeepRacer IMU sensor */
     CCI_DeepracerIMUSensor* m_pcIMU;
+    /* Counter for message output */
+    size_t m_unCounter = 0;
 };
 
 #endif

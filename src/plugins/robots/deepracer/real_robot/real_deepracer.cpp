@@ -80,6 +80,6 @@ void CRealDeepracer::Act(Real f_elapsed_time) {
         m_vecActuators[i]->Do(f_elapsed_time);
     }
 
-    // Tell ROS Tto publish the messages
+    // Tell ROS to publish the messages
     rclcpp::spin_some(GetNodeHandlePtr());
 }

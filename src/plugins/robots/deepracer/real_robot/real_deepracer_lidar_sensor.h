@@ -31,7 +31,7 @@ public:
      * Returns the readings of this sensor
      */
     inline size_t GetNumReadings() const {
-        return Abs(m_fAngleMax - m_fAngleMin) / m_fAngleIncrement;
+        return m_vecRanges.size();
     }
 
     /*
