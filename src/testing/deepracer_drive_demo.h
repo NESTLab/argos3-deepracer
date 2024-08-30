@@ -1,5 +1,5 @@
-#ifndef DEEPRACER_DIFFUSION_H
-#define DEEPRACER_DIFFUSION_H
+#ifndef DEEPRACER_DRIVE_DEMO_H
+#define DEEPRACER_DRIVE_DEMO_H
 
 /*
  * Include some necessary headers.
@@ -19,14 +19,14 @@ using namespace argos;
 /*
  * A controller is simply an implementation of the CCI_Controller class.
  */
-class CDeepracerDiffusion : public CCI_Controller {
+class CDeepracerDriveDemo : public CCI_Controller {
 public:
 
     /* Class constructor. */
-    CDeepracerDiffusion();
+    CDeepracerDriveDemo();
 
     /* Class destructor. */
-    virtual ~CDeepracerDiffusion() {}
+    virtual ~CDeepracerDriveDemo() {}
 
     /*
      * This function initializes the controller.
@@ -75,22 +75,14 @@ private:
      * <controllers><footbot_diffusion_controller> section.
      */
 
-    /* Maximum tolerance for the angle between
-     * the robot heading direction and
-     * the closest obstacle detected. */
-    CDegrees m_cAlpha;
-    /* Maximum tolerance for the proximity reading between
-     * the robot and the closest obstacle.
-     * The proximity reading is 0 when nothing is detected
-     * and grows exponentially to 1 when the obstacle is
-     * touching the robot.
-     */
-    Real m_fDelta;
-    /* Wheel speed. */
+    /* Time to switch steering */
+    UInt32 m_unSwitchingTime;
+    /* Wheel speed */
     Real m_fWheelVelocity;
-    /* Angle tolerance range to go straight.
-     * It is set to [-alpha,alpha]. */
-    CRange<CRadians> m_cGoStraightAngleRange;
+    /* Current steering angle */
+    Real m_fCurrentSteeringAngle = M_2_PI;
+    /* Time step counter */
+    UInt32 m_unCounter = 0;
 };
 
 #endif

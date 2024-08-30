@@ -1,5 +1,5 @@
 /* Include the controller definition */
-#include "deepracer_hello_world.h"
+#include "deepracer_drive_demo.h"
 /* Function definitions for XML parsing */
 #include <argos3/core/utility/configuration/argos_configuration.h>
 /* 2D vector definition */
@@ -10,13 +10,16 @@
 /****************************************/
 /****************************************/
 
-CDeepracerHelloWorld::CDeepracerHelloWorld() : m_pcLIDAR(NULL),
-                                               m_pcIMU(NULL) {}
+CDeepracerDriveDemo::CDeepracerDriveDemo() : m_pcWheels(NULL),
+                                             m_pcLIDAR(NULL),
+                                             m_pcIMU(NULL),
+                                             m_unSwitchingTime(700),
+                                             m_fWheelVelocity(2.0f) {}
 
 /****************************************/
 /****************************************/
 
-void CDeepracerHelloWorld::Init(TConfigurationNode& t_node) {
+void CDeepracerDriveDemo::Init(TConfigurationNode &t_node) {
     /*
      * Get sensor/actuator handles
      *
@@ -34,51 +37,27 @@ void CDeepracerHelloWorld::Init(TConfigurationNode& t_node) {
      *
      * NOTE: ARGoS creates and initializes actuators and sensors
      * internally, on the basis of the lists provided the configuration
-     * file at the <controllers><deepracer_diffusion><actuators> and
-     * <controllers><deepracer_diffusion><sensors> sections. If you forgot to
+     * file at the <controllers><deepracer_drive_demo><actuators> and
+     * <controllers><deepracer_drive_demo><sensors> sections. If you forgot to
      * list a device in the XML and then you request it here, an error
      * occurs.
      */
-    GetNodeAttributeOrDefault(t_node, "evo", m_bEvo, m_bEvo);
-
-    if (m_bEvo) {
-        m_pcLIDAR = GetSensor<CCI_DeepracerLIDARSensor>("deepracer_lidar");
-    }
-    m_pcIMU = GetSensor<CCI_DeepracerIMUSensor>("deepracer_imu");
+    m_pcWheels = GetActuator<CCI_AckermannSteeringActuator>("ackermann_steering");
+    GetNodeAttributeOrDefault(t_node, "switching_time", m_unSwitchingTime, m_unSwitchingTime);
+    GetNodeAttributeOrDefault(t_node, "velocity", m_fWheelVelocity, m_fWheelVelocity);
 }
 
 /****************************************/
 /****************************************/
 
-void CDeepracerHelloWorld::ControlStep() {
-
-    if (++m_unCounter % 10 == 0) {
-        // Print IMU readings
-        auto sReading = m_pcIMU->GetReading();
-
-        LOG << "IMU Angular Velocity (x, y, z) = (" << sReading.AngVelocity.GetX()
-            << ", " << sReading.AngVelocity.GetY()
-            << ", " << sReading.AngVelocity.GetZ()
-            << ")" << std::endl;
-
-        LOG << "IMU Linear Acceleration (x, y, z) = (" << sReading.LinAcceleration.GetX()
-            << ", " << sReading.LinAcceleration.GetY()
-            << ", " << sReading.LinAcceleration.GetZ()
-            << ")" << std::endl;
-
-        // Print LIDAR messages
-        if (m_bEvo) {
-            LOG << "LIDAR ranges (" << "points) = [" << std::endl;
-            for (size_t i = 0; i < m_pcLIDAR->GetNumReadings(); ++i) {
-                LOG << m_pcLIDAR->GetReading(i) << " ";
-            }
-            LOG << std::endl << "]" << std::endl << std::endl;
-
-            LOG.Flush(); // temporary fix to ensure log outputs get out
-        }
-
-        m_unCounter = 0; // reset counter
+void CDeepracerDriveDemo::ControlStep() {
+    // Flip steering direction
+    if (++m_unCounter % m_unSwitchingTime == 0) {
+        m_fCurrentSteeringAngle = -m_fCurrentSteeringAngle;
+        m_unCounter             = 0;
     }
+
+    m_pcWheels->SetSteeringAndThrottle(m_fCurrentSteeringAngle, m_fWheelVelocity);
 }
 
 /****************************************/
@@ -94,4 +73,4 @@ void CDeepracerHelloWorld::ControlStep() {
  * controller class to instantiate.
  * See also the configuration files for an example of how this is used.
  */
-REGISTER_CONTROLLER(CDeepracerHelloWorld, "deepracer_hello_world_controller")
+REGISTER_CONTROLLER(CDeepracerDriveDemo, "deepracer_drive_demo_controller")

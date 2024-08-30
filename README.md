@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# ARGoS3 - Deepracer AWS integration #
-=======
 # ARGoS3 - AWS DeepRacer integration #
->>>>>>> feature/real_robot_implementation
 
 This repository contains the code that integrates the [ARGoS3 multi-robot simulator](http://www.argos-sim.info) and the [AWS DeepRacer robot](https://aws.amazon.com/deepracer/).
 

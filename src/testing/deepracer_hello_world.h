@@ -67,6 +67,8 @@ private:
     CCI_DeepracerIMUSensor* m_pcIMU;
     /* Counter for message output */
     size_t m_unCounter = 0;
+    /* Flag to determine if the controller is run on an Evo unit */
+    bool m_bEvo = false;
 };
 
 #endif

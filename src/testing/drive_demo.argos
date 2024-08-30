@@ -16,15 +16,15 @@
   <!-- *************** -->
   <controllers>
 
-    <deepracer_hello_world_controller id="drhw"
-                               library="build/testing/libdeepracer_hello_world">
-      <actuators />
+    <deepracer_drive_demo_controller id="drsm" library="build/testing/libdeepracer_drive_demo">
+      <actuators>
+        <ackermann_steering implementation="default" />
+      </actuators>
       <sensors>
         <deepracer_imu implementation="default" />
-        <deepracer_lidar implementation="default" num_readings="50" show_rays="true"/> <!-- num_readings and show_rays only applicable in simulation -->
       </sensors>
-      <params evo="true" />
-    </deepracer_hello_world_controller>
+      <params switching_time="700" velocity="2.0" /> <!-- velocity in cm/s; switching time and velocity has been manually tuned -->
+    </deepracer_drive_demo_controller>
 
   </controllers>
 
@@ -48,7 +48,7 @@
 
     <deepracer id="dr0">
       <body position="0,0,0" orientation="0,0,0" />
-      <controller config="drhw" />
+      <controller config="drsm" />
     </deepracer>
 
   </arena>
