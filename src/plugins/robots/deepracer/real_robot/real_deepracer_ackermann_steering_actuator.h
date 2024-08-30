@@ -13,7 +13,7 @@ namespace argos {
             public CRealDeepracerDevice {
     public:
 
-        CRealDeepracerAckermannSteeringActuator(const std::shared_ptr<CRealDeepracer>& pt_node);
+        CRealDeepracerAckermannSteeringActuator(const std::shared_ptr<rclcpp::Node>& pt_node);
         virtual ~CRealDeepracerAckermannSteeringActuator();
         virtual void Do(Real f_elapsed_time);
         virtual void SetSteeringAndThrottle(Real f_normalized_steering_ang,

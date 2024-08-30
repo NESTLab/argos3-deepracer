@@ -15,25 +15,24 @@ class CRealDeepracerDevice; // forward declare CRealDeepracerDevice
 
 class CRealDeepracer :
         public CRealRobot,
-        public rclcpp::Node,
-        public std::enable_shared_from_this<CRealDeepracer> {
+        public rclcpp::Node {
 public:
 
     CRealDeepracer();
     virtual ~CRealDeepracer() {}
     virtual void InitRobot() {}
-    virtual void InitRobot(std::string str_argos_fname, std::string str_controller_id);
     virtual void Destroy();
     virtual CCI_Actuator* MakeActuator(const std::string& str_name);
     virtual CCI_Sensor* MakeSensor(const std::string& str_name);
     virtual void Sense(Real f_elapsed_time);
     virtual void Act(Real f_elapsed_time);
+    inline std::shared_ptr<rclcpp::Node> GetNodeHandlePtr() {
+        return this->std::enable_shared_from_this<rclcpp::Node>::shared_from_this();
+    }
 
 private:
     std::vector<CRealDeepracerDevice *> m_vecActuators;
     std::vector<CRealDeepracerDevice *> m_vecSensors;
-    std::string strControllerId;
-    std::string strARGoSFName;
 };
 
 #endif

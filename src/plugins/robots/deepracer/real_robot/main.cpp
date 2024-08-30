@@ -27,13 +27,20 @@ int main(int argc, char* argv[]) {
             strControllerId);
     try {
         cCLAP.Parse(argc, argv);
+
+        /*
+         * Initialize ROS
+        */
+        rclcpp::init(0, nullptr);
+
         /*
          * Initialize the robot
          */
-        CRealDeepracer* pcRobot = new CRealDeepracer();
-        pcRobot->InitRobot(strARGoSFName, strControllerId);
-        rclcpp::init(argc, argv); // argc, argv but I just set them to 0 here
-        rclcpp::spin_some(std::make_shared<CRealDeepracer>());
+        std::shared_ptr<CRealDeepracer> pcRobot = std::make_shared<CRealDeepracer>();
+
+        pcRobot->Init(strARGoSFName, strControllerId);
+
+        rclcpp::spin_some(pcRobot->GetNodeHandlePtr());
 
         /*
          * Perform the main loop
@@ -48,6 +55,7 @@ int main(int argc, char* argv[]) {
     catch(CARGoSException& ex) {
         /* A fatal error occurred: dispose of data, print error and exit */
         LOGERR << ex.what() << std::endl;
+        LOGERR.Flush(); // temporary fix to ensure that exception messages get published
         return 1;
     }
     /* All done (should never get here) */

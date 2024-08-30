@@ -12,9 +12,8 @@ class CRealDeepracerIMUSensor :
         public CCI_DeepracerIMUSensor,
         public CRealDeepracerDevice {
 public:
-    CRealDeepracerIMUSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle);
+    CRealDeepracerIMUSensor(const std::shared_ptr<rclcpp::Node>& pt_node_handle);
     virtual ~CRealDeepracerIMUSensor();
-    virtual void Do(Real f_elapsed_time);
 
     virtual CVector3 GetAngularVelocities() const;
     virtual CVector3 GetLinearAccelerations() const;

@@ -16,7 +16,7 @@ class CRealDeepracerLIDARSensor : public CCI_DeepracerLIDARSensor,
                                   public CRealDeepracerDevice {
 public:
 
-    CRealDeepracerLIDARSensor(const std::shared_ptr<CRealDeepracer>& pt_node_handle);
+    CRealDeepracerLIDARSensor(const std::shared_ptr<rclcpp::Node>& pt_node_handle);
 
     virtual ~CRealDeepracerLIDARSensor();
 
@@ -31,7 +31,7 @@ public:
      * Returns the readings of this sensor
      */
     inline size_t GetNumReadings() const {
-        return Abs(m_fAngleMax - m_fAngleMin) / m_fAngleIncrement;
+        return m_vecRanges.size();
     }
 
     /*
